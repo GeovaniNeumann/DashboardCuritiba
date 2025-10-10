@@ -1,0 +1,467 @@
+/* Arquivo: dashboard/css/style.css */
+
+/* Variáveis de Cor e Fontes */
+:root {
+    --primary-color: #0a4f70; /* Azul escuro */
+    --secondary-color: #4ab8a1; /* Verde-água */
+    --background-color: #f4f7f6;
+    --card-background: #ffffff;
+    --text-color: #333333;
+    --text-light: #777777;
+    --border-color: #e0e0e0;
+    --shadow: 0 2px 4px rgba(0,0,0,0.05);
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Reset e Estilos Globais */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+/* Header */
+.header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1rem 2rem;
+    text-align: center;
+}
+
+.header h1 {
+    font-size: 1.8rem;
+    margin-bottom: 0.25rem;
+}
+
+/* Layout Principal com Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 280px 1fr; /* Sidebar fixa e conteúdo flexível */
+    gap: 2rem;
+    padding: 2rem;
+}
+
+/* Sidebar de Filtros */
+.sidebar {
+    background-color: var(--card-background);
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    height: fit-content;
+}
+
+.sidebar h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.filter-group {
+    margin-bottom: 1rem;
+}
+
+.filter-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.filter-group input,
+.filter-group select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #3aa891;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+}
+
+/* Conteúdo Principal */
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* Cards de KPI */
+.kpi-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.kpi-card {
+    background-color: var(--card-background);
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    text-align: center;
+}
+
+.kpi-card h3 {
+    font-size: 1rem;
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+}
+
+.kpi-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+/* Grid de Gráficos */
+.chart-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.chart-card {
+    background-color: var(--card-background);
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+}
+
+.chart-card h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+/* Seção do Calendário */
+.calendar-section {
+    background-color: var(--card-background);
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+}
+
+.calendar-section h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+/* Estilização do FullCalendar */
+:root {
+    --fc-border-color: var(--border-color);
+    --fc-today-bg-color: rgba(74, 184, 161, 0.1);
+}
+.fc .fc-toolbar-title {
+    font-size: 1.2em;
+}
+.fc-event.grande { background-color: #dc3545; border-color: #dc3545; }
+.fc-event.medio { background-color: #ffc107; border-color: #ffc107; }
+.fc-event.pequeno { background-color: #17a2b8; border-color: #17a2b8; }
+
+/* Seção da Lista de Clientes */
+.client-list-section {
+    background-color: var(--card-background);
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    overflow-x: auto; /* Para tabelas largas */
+}
+
+.client-list-section h2 {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+#client-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#client-table th, #client-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+#client-table th {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    color: var(--text-light);
+}
+
+#client-table tbody tr:hover {
+    background-color: var(--background-color);
+}
+
+/* Classes de Status para a Tabela */
+.status-ativo {
+    color: #28a745;
+    font-weight: 700;
+}
+.status-inativo {
+    color: #dc3545;
+    font-weight: 700;
+}
+
+/* Responsividade */
+@media (max-width: 1200px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr; /* Empilha a sidebar e o conteúdo */
+    }
+    .sidebar {
+        grid-row: 1; /* Garante que a sidebar venha primeiro */
+    }
+}
+
+@media (max-width: 768px) {
+    .chart-grid {
+        grid-template-columns: 1fr; /* Gráficos um abaixo do outro */
+    }
+    .kpi-container {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+    .header {
+        padding: 1rem;
+    }
+    .dashboard-grid {
+        padding: 1rem;
+    }
+}
+
+/* Estilos para o Mapa (Leaflet) */
+.map-section {
+    background-color: var(--card-background);
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+}
+
+.map-section h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+#map {
+    height: 400px; /* Altura fixa para o mapa */
+    border-radius: 4px;
+}
+
+/* Botões de Ação */
+.btn-edit {
+    background: var(--secondary-color);
+    color: white;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    margin-right: 0.25rem;
+}
+
+.btn-delete {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.modal h3 {
+    margin-bottom: 1.5rem;
+    color: var(--primary-color);
+}
+
+/* Formulários */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.form-group textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+}
+
+/* Notificações */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 1rem 1.5rem;
+    border-radius: 4px;
+    color: white;
+    z-index: 1001;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+.notification.success { background: #28a745; }
+.notification.error { background: #dc3545; }
+.notification.info { background: #17a2b8; }
+
+/* Rota */
+.route-list {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+}
+
+.route-list li {
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+    background: var(--background-color);
+    border-radius: 4px;
+    border-left: 3px solid var(--secondary-color);
+}
+
+.route-summary {
+    background: var(--background-color);
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.route-summary p {
+    margin-bottom: 0.5rem;
+}
+
+/* Clientes Selecionados */
+.client-marker.selected {
+    filter: hue-rotate(90deg);
+}
+
+#selected-clients-list {
+    background: var(--background-color);
+    padding: 1rem;
+    border-radius: 4px;
+    margin-top: 1rem;
+}
+
+#selected-clients-names {
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.selected-client-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background: white;
+    margin-bottom: 0.25rem;
+    border-radius: 4px;
+}
+
+.remove-selected {
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    font-size: 0.7rem;
+}
+
+.action-group {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.action-group h3 {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    color: var(--text-light);
+}

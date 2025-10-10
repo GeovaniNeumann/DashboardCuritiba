@@ -1,0 +1,83 @@
+// Arquivo: js/data.js
+
+const CLIENT_NAMES = [
+    "Hospital Santa Clara", "Clínica São Lucas", "Maternidade Esperança", "Laboratório Central", "Centro Médico Alfa",
+    "Unidade de Saúde Beta", "Consultório Odontológico Delta", "Clínica de Olhos Gama", "Hospital Regional Sul",
+    "Posto de Saúde Leste", "Clínica de Fisioterapia", "Centro de Diagnóstico", "Hospital Infantil", "Ambulatório Geral",
+    "Clínica Veterinária Curitiba", "Hospital de Oncologia", "Clínica de Estética", "Laboratório de Análises",
+    "Hospital Universitário", "Clínica Geriátrica", "Hospital do Coração", "Clínica de Reabilitação",
+    "Centro Cirúrgico Privado", "Hospital Ortopédico", "Clínica de Dermatologia"
+];
+
+const PORTE = ["Grande", "Médio", "Pequeno"];
+const CURITIBA_CENTER = [-25.4284, -49.2733];
+
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function getRandomDate(start, end) {
+    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+}
+
+function generateMockClients(count) {
+    const clients = [];
+    for (let i = 1; i <= count; i++) {
+        const porte = PORTE[getRandomInt(0, 2)];
+        let revenue, frequency;
+
+        if (porte === "Grande") {
+            revenue = getRandomInt(50000, 150000);
+            frequency = getRandomInt(7, 15);
+        } else if (porte === "Médio") {
+            revenue = getRandomInt(15000, 49999);
+            frequency = getRandomInt(15, 30);
+        } else {
+            revenue = getRandomInt(1000, 14999);
+            frequency = getRandomInt(30, 90);
+        }
+
+        const lastServiceDate = getRandomDate(new Date(2024, 0, 1), new Date());
+        const nextContactDate = new Date(lastServiceDate);
+        nextContactDate.setDate(lastServiceDate.getDate() + getRandomInt(10, 60));
+
+        const lat = CURITIBA_CENTER[0] + (Math.random() - 0.5) * 0.1;
+        const lng = CURITIBA_CENTER[1] + (Math.random() - 0.5) * 0.1;
+
+        clients.push({
+            id: i,
+            name: `${CLIENT_NAMES[getRandomInt(0, CLIENT_NAMES.length - 1)]} (${i})`,
+            cnpj: `00.000.000/${String(i).padStart(4, '0')}-00`,
+            porte: porte,
+            revenue_ytd: revenue,
+            frequency_days: frequency,
+            last_service: lastServiceDate.toISOString().split('T')[0],
+            next_contact: nextContactDate.toISOString().split('T')[0],
+            address: `Rua Fictícia, ${getRandomInt(100, 999)} - Curitiba/PR`,
+            status: "Ativo",
+            email: `contato@cliente${i}.com.br`,
+            phone: `(41) 9${getRandomInt(1000, 9999)}-${getRandomInt(1000, 9999)}`,
+            lat: lat,
+            lng: lng
+        });
+    }
+    return clients;
+}
+
+// Gera dados
+const CLIENTS_DATA = generateMockClients(50); // Reduzido para 50 para teste
+
+// Gera eventos
+const EVENTS_DATA = CLIENTS_DATA.map(client => {
+    return {
+        title: `Contato: ${client.name}`,
+        start: client.next_contact,
+        allDay: true,
+        classNames: [client.porte.toLowerCase()],
+        extendedProps: {
+            clientId: client.id
+        }
+    };
+});
+
+console.log('✅ data.js carregado -', CLIENTS_DATA.length, 'clientes gerados');

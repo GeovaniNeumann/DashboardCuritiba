@@ -25,41 +25,48 @@ body {
     background-color: var(--background-color);
     color: var(--text-color);
     line-height: 1.6;
+    font-size: 14px; /* Base menor para mobile */
 }
 
-/* Header */
+/* Header - Mobile First */
 .header {
     background-color: var(--primary-color);
     color: white;
-    padding: 1rem 2rem;
+    padding: 1rem;
     text-align: center;
 }
 
 .header h1 {
-    font-size: 1.8rem;
+    font-size: 1.4rem;
     margin-bottom: 0.25rem;
 }
 
-/* Layout Principal com Grid */
+.header p {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+/* Layout Principal com Grid - Mobile First */
 .dashboard-grid {
     display: grid;
-    grid-template-columns: 280px 1fr; /* Sidebar fixa e conteúdo flexível */
-    gap: 2rem;
-    padding: 2rem;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1rem;
 }
 
 /* Sidebar de Filtros */
 .sidebar {
     background-color: var(--card-background);
-    padding: 1.5rem;
+    padding: 1rem;
     border-radius: 8px;
     box-shadow: var(--shadow);
     height: fit-content;
+    order: 1; /* Sidebar vem depois do conteúdo no mobile */
 }
 
 .sidebar h2 {
-    font-size: 1.2rem;
-    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 0.5rem;
 }
@@ -72,13 +79,13 @@ body {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
 }
 
 .filter-group input,
 .filter-group select {
     width: 100%;
-    padding: 0.5rem;
+    padding: 0.75rem;
     border: 1px solid var(--border-color);
     border-radius: 4px;
     font-size: 0.9rem;
@@ -91,7 +98,7 @@ body {
     color: white;
     border: none;
     border-radius: 4px;
-    font-size: 1rem;
+    font-size: 0.9rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
@@ -108,6 +115,8 @@ body {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    font-size: 0.9rem;
+    width: 100%;
 }
 
 .btn-secondary:hover {
@@ -118,78 +127,108 @@ body {
 .content {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1rem;
+    order: 0; /* Conteúdo vem primeiro no mobile */
 }
 
-/* Cards de KPI */
+/* Cards de KPI - Mobile First */
 .kpi-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
 }
 
 .kpi-card {
     background-color: var(--card-background);
-    padding: 1.5rem;
+    padding: 1rem;
     border-radius: 8px;
     box-shadow: var(--shadow);
     text-align: center;
 }
 
 .kpi-card h3 {
-    font-size: 1rem;
+    font-size: 0.8rem;
     color: var(--text-light);
     margin-bottom: 0.5rem;
 }
 
 .kpi-value {
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: 700;
     color: var(--primary-color);
 }
 
-/* Grid de Gráficos */
+/* Grid de Gráficos - Mobile First */
 .chart-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
+    grid-template-columns: 1fr;
+    gap: 1rem;
 }
 
 .chart-card {
     background-color: var(--card-background);
-    padding: 1.5rem;
+    padding: 1rem;
     border-radius: 8px;
     box-shadow: var(--shadow);
+    min-height: 300px; /* Altura mínima para gráficos */
 }
 
 .chart-card h2 {
     text-align: center;
     margin-bottom: 1rem;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
+}
+
+/* Ajuste do canvas dos gráficos para mobile */
+.chart-card canvas {
+    max-height: 250px !important;
 }
 
 /* Seção do Calendário */
 .calendar-section {
     background-color: var(--card-background);
-    padding: 1.5rem;
+    padding: 1rem;
     border-radius: 8px;
     box-shadow: var(--shadow);
+    overflow: hidden; /* Previne overflow horizontal */
 }
 
 .calendar-section h2 {
     text-align: center;
     margin-bottom: 1rem;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
 }
 
-/* Estilização do FullCalendar */
-:root {
-    --fc-border-color: var(--border-color);
-    --fc-today-bg-color: rgba(74, 184, 161, 0.1);
+/* Estilização do FullCalendar para Mobile */
+.fc .fc-toolbar {
+    flex-direction: column;
+    gap: 0.5rem;
 }
+
 .fc .fc-toolbar-title {
-    font-size: 1.2em;
+    font-size: 1.1em !important;
 }
+
+.fc .fc-button {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.8rem;
+}
+
+.fc .fc-daygrid-day-frame {
+    min-height: 60px !important;
+}
+
+.fc .fc-daygrid-day-number {
+    font-size: 0.8rem;
+    padding: 2px !important;
+}
+
+.fc-event {
+    font-size: 0.7rem !important;
+    padding: 1px 3px !important;
+    margin: 1px 0 !important;
+}
+
 .fc-event.grande { background-color: #dc3545; border-color: #dc3545; }
 .fc-event.medio { background-color: #ffc107; border-color: #ffc107; }
 .fc-event.pequeno { background-color: #17a2b8; border-color: #17a2b8; }
@@ -197,32 +236,36 @@ body {
 /* Seção da Lista de Clientes */
 .client-list-section {
     background-color: var(--card-background);
-    padding: 1.5rem;
+    padding: 1rem;
     border-radius: 8px;
     box-shadow: var(--shadow);
-    overflow-x: auto; /* Para tabelas largas */
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* Scroll suave no iOS */
 }
 
 .client-list-section h2 {
     margin-bottom: 1rem;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
 }
 
 #client-table {
     width: 100%;
     border-collapse: collapse;
+    min-width: 600px; /* Largura mínima para a tabela */
 }
 
 #client-table th, #client-table td {
-    padding: 0.75rem;
+    padding: 0.5rem;
     text-align: left;
     border-bottom: 1px solid var(--border-color);
+    font-size: 0.8rem;
 }
 
 #client-table th {
-    font-size: 0.9rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
     color: var(--text-light);
+    white-space: nowrap;
 }
 
 #client-table tbody tr:hover {
@@ -239,35 +282,10 @@ body {
     font-weight: 700;
 }
 
-/* Responsividade */
-@media (max-width: 1200px) {
-    .dashboard-grid {
-        grid-template-columns: 1fr; /* Empilha a sidebar e o conteúdo */
-    }
-    .sidebar {
-        grid-row: 1; /* Garante que a sidebar venha primeiro */
-    }
-}
-
-@media (max-width: 768px) {
-    .chart-grid {
-        grid-template-columns: 1fr; /* Gráficos um abaixo do outro */
-    }
-    .kpi-container {
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    }
-    .header {
-        padding: 1rem;
-    }
-    .dashboard-grid {
-        padding: 1rem;
-    }
-}
-
 /* Estilos para o Mapa (Leaflet) */
 .map-section {
     background-color: var(--card-background);
-    padding: 1.5rem;
+    padding: 1rem;
     border-radius: 8px;
     box-shadow: var(--shadow);
 }
@@ -275,37 +293,39 @@ body {
 .map-section h2 {
     text-align: center;
     margin-bottom: 1rem;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
 }
 
 #map {
-    height: 400px; /* Altura fixa para o mapa */
+    height: 300px; /* Altura menor para mobile */
     border-radius: 4px;
 }
 
-/* Botões de Ação */
+/* Botões de Ação na Tabela */
 .btn-edit {
     background: var(--secondary-color);
     color: white;
     border: none;
-    padding: 0.4rem 0.8rem;
+    padding: 0.3rem 0.6rem;
     border-radius: 3px;
     cursor: pointer;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     margin-right: 0.25rem;
+    margin-bottom: 0.25rem;
 }
 
 .btn-delete {
     background: #dc3545;
     color: white;
     border: none;
-    padding: 0.4rem 0.8rem;
+    padding: 0.3rem 0.6rem;
     border-radius: 3px;
     cursor: pointer;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
+    margin-bottom: 0.25rem;
 }
 
-/* Modal */
+/* Modal - Responsivo */
 .modal {
     position: fixed;
     top: 0;
@@ -317,25 +337,27 @@ body {
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    padding: 1rem;
 }
 
 .modal-content {
     background: white;
-    padding: 2rem;
+    padding: 1.5rem;
     border-radius: 8px;
+    width: 100%;
     max-width: 500px;
-    width: 90%;
-    max-height: 80vh;
+    max-height: 90vh;
     overflow-y: auto;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 .modal h3 {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     color: var(--primary-color);
+    font-size: 1.1rem;
 }
 
-/* Formulários */
+/* Formulários Responsivos */
 .form-group {
     margin-bottom: 1rem;
 }
@@ -344,14 +366,14 @@ body {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
     width: 100%;
-    padding: 0.5rem;
+    padding: 0.75rem;
     border: 1px solid var(--border-color);
     border-radius: 4px;
     font-size: 0.9rem;
@@ -364,27 +386,34 @@ body {
 
 .modal-actions {
     display: flex;
-    gap: 1rem;
-    justify-content: flex-end;
+    flex-direction: column;
+    gap: 0.5rem;
     margin-top: 1.5rem;
 }
 
-/* Notificações */
+.modal-actions button {
+    width: 100%;
+}
+
+/* Notificações para Mobile */
 .notification {
     position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 1rem 1.5rem;
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    padding: 1rem;
     border-radius: 4px;
     color: white;
     z-index: 1001;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     animation: slideIn 0.3s ease;
+    text-align: center;
+    font-size: 0.9rem;
 }
 
 @keyframes slideIn {
-    from { transform: translateX(100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
+    from { transform: translateY(-100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
 
 .notification.success { background: #28a745; }
@@ -394,15 +423,16 @@ body {
 /* Rota */
 .route-list {
     margin: 1rem 0;
-    padding-left: 1.5rem;
+    padding-left: 1rem;
 }
 
 .route-list li {
     margin-bottom: 0.5rem;
-    padding: 0.5rem;
+    padding: 0.75rem;
     background: var(--background-color);
     border-radius: 4px;
     border-left: 3px solid var(--secondary-color);
+    font-size: 0.9rem;
 }
 
 .route-summary {
@@ -410,6 +440,7 @@ body {
     padding: 1rem;
     border-radius: 4px;
     margin-bottom: 1rem;
+    font-size: 0.9rem;
 }
 
 .route-summary p {
@@ -417,10 +448,6 @@ body {
 }
 
 /* Clientes Selecionados */
-.client-marker.selected {
-    filter: hue-rotate(90deg);
-}
-
 #selected-clients-list {
     background: var(--background-color);
     padding: 1rem;
@@ -429,7 +456,7 @@ body {
 }
 
 #selected-clients-names {
-    max-height: 150px;
+    max-height: 120px;
     overflow-y: auto;
 }
 
@@ -441,6 +468,7 @@ body {
     background: white;
     margin-bottom: 0.25rem;
     border-radius: 4px;
+    font-size: 0.85rem;
 }
 
 .remove-selected {
@@ -452,16 +480,224 @@ body {
     height: 20px;
     cursor: pointer;
     font-size: 0.7rem;
+    flex-shrink: 0;
 }
 
 .action-group {
-    margin-top: 2rem;
-    padding-top: 1.5rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
     border-top: 1px solid var(--border-color);
 }
 
 .action-group h3 {
-    font-size: 1rem;
+    font-size: 0.9rem;
     margin-bottom: 1rem;
     color: var(--text-light);
+}
+
+/* ========== MEDIA QUERIES ========== */
+
+/* Tablets (768px pra cima) */
+@media (min-width: 768px) {
+    body {
+        font-size: 16px;
+    }
+    
+    .header {
+        padding: 1rem 2rem;
+    }
+    
+    .header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .dashboard-grid {
+        gap: 1.5rem;
+        padding: 1.5rem;
+    }
+    
+    .sidebar {
+        padding: 1.5rem;
+    }
+    
+    .content {
+        gap: 1.5rem;
+    }
+    
+    .kpi-container {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+    }
+    
+    .kpi-card {
+        padding: 1.25rem;
+    }
+    
+    .kpi-value {
+        font-size: 1.8rem;
+    }
+    
+    .chart-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+    
+    .chart-card {
+        padding: 1.5rem;
+    }
+    
+    .calendar-section,
+    .map-section,
+    .client-list-section {
+        padding: 1.5rem;
+    }
+    
+    #map {
+        height: 350px;
+    }
+    
+    .modal-actions {
+        flex-direction: row;
+        justify-content: flex-end;
+    }
+    
+    .modal-actions button {
+        width: auto;
+    }
+    
+    .notification {
+        right: 20px;
+        left: auto;
+        width: auto;
+        max-width: 400px;
+    }
+}
+
+/* Desktop (1200px pra cima) */
+@media (min-width: 1200px) {
+    .dashboard-grid {
+        grid-template-columns: 300px 1fr;
+        gap: 2rem;
+        padding: 2rem;
+    }
+    
+    .sidebar {
+        order: 0; /* Sidebar volta para a esquerda */
+    }
+    
+    .content {
+        order: 1;
+        gap: 2rem;
+    }
+    
+    .kpi-container {
+        gap: 1.5rem;
+    }
+    
+    .kpi-card {
+        padding: 1.5rem;
+    }
+    
+    .kpi-value {
+        font-size: 2rem;
+    }
+    
+    .chart-grid {
+        gap: 2rem;
+    }
+    
+    .chart-card {
+        padding: 1.5rem;
+    }
+    
+    #map {
+        height: 400px;
+    }
+    
+    #client-table th, #client-table td {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+    
+    .btn-edit,
+    .btn-delete {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+    }
+}
+
+/* Telas muito pequenas (até 360px) */
+@media (max-width: 360px) {
+    .dashboard-grid {
+        padding: 0.5rem;
+        gap: 0.75rem;
+    }
+    
+    .kpi-container {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .kpi-card {
+        padding: 0.75rem;
+    }
+    
+    .kpi-value {
+        font-size: 1.3rem;
+    }
+    
+    .sidebar,
+    .chart-card,
+    .calendar-section,
+    .map-section,
+    .client-list-section {
+        padding: 0.75rem;
+    }
+    
+    #map {
+        height: 250px;
+    }
+    
+    .modal-content {
+        padding: 1rem;
+        margin: 0.5rem;
+    }
+}
+
+/* Orientação Landscape em Mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+    .modal-content {
+        max-height: 80vh;
+    }
+    
+    #map {
+        height: 250px;
+    }
+    
+    .kpi-container {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Ajustes para telas de alta densidade (Retina) */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .kpi-value {
+        font-weight: 600;
+    }
+}
+
+/* Prevenir zoom em inputs no iOS */
+@media screen and (max-width: 768px) {
+    input, select, textarea {
+        font-size: 16px !important; /* Previne zoom no iOS */
+    }
+}
+
+/* Melhorias de acessibilidade */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }

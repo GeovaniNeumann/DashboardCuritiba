@@ -1,9 +1,9 @@
-/* Arquivo: dashboard/css/style.css */
+/* Arquivo: dashboard/css/style.css - VERSÃO CORRIGIDA PARA SMARTPHONE */
 
 /* Variáveis de Cor e Fontes */
 :root {
-    --primary-color: #0a4f70; /* Azul escuro */
-    --secondary-color: #4ab8a1; /* Verde-água */
+    --primary-color: #0a4f70;
+    --secondary-color: #4ab8a1;
     --background-color: #f4f7f6;
     --card-background: #ffffff;
     --text-color: #333333;
@@ -25,7 +25,7 @@ body {
     background-color: var(--background-color);
     color: var(--text-color);
     line-height: 1.6;
-    font-size: 14px; /* Base menor para mobile */
+    font-size: 14px;
 }
 
 /* Header - Mobile First */
@@ -34,34 +34,38 @@ body {
     color: white;
     padding: 1rem;
     text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 .header h1 {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     margin-bottom: 0.25rem;
 }
 
 .header p {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     opacity: 0.9;
 }
 
-/* Layout Principal com Grid - Mobile First */
+/* Layout Principal - MOBILE FIRST */
 .dashboard-grid {
-    display: grid;
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 1rem;
     padding: 1rem;
+    max-width: 100%;
+    overflow-x: hidden;
 }
 
-/* Sidebar de Filtros */
+/* Sidebar - Mobile First */
 .sidebar {
     background-color: var(--card-background);
     padding: 1rem;
     border-radius: 8px;
     box-shadow: var(--shadow);
-    height: fit-content;
-    order: 1; /* Sidebar vem depois do conteúdo no mobile */
+    order: 2; /* Sidebar por último no mobile */
 }
 
 .sidebar h2 {
@@ -88,7 +92,7 @@ body {
     padding: 0.75rem;
     border: 1px solid var(--border-color);
     border-radius: 4px;
-    font-size: 0.9rem;
+    font-size: 16px; /* Previne zoom no iOS */
 }
 
 .btn-primary {
@@ -119,23 +123,21 @@ body {
     width: 100%;
 }
 
-.btn-secondary:hover {
-    background: #5a6268;
-}
-
-/* Conteúdo Principal */
+/* Conteúdo Principal - MOBILE FIRST */
 .content {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    order: 0; /* Conteúdo vem primeiro no mobile */
+    order: 1; /* Conteúdo primeiro no mobile */
+    width: 100%;
 }
 
-/* Cards de KPI - Mobile First */
+/* Cards de KPI - CORRIGIDO PARA MOBILE */
 .kpi-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 0.75rem;
+    width: 100%;
 }
 
 .kpi-card {
@@ -144,25 +146,41 @@ body {
     border-radius: 8px;
     box-shadow: var(--shadow);
     text-align: center;
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    word-wrap: break-word;
+    overflow: hidden;
 }
 
 .kpi-card h3 {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     color: var(--text-light);
     margin-bottom: 0.5rem;
+    line-height: 1.2;
 }
 
 .kpi-value {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: 700;
     color: var(--primary-color);
+    line-height: 1.2;
+    word-break: break-word;
 }
 
-/* Grid de Gráficos - Mobile First */
+/* CORREÇÃO ESPECÍFICA para o KPI de faturamento */
+.kpi-card:nth-child(3) .kpi-value {
+    font-size: 1rem; /* Menor para caber valores longos */
+    font-weight: 600;
+}
+
+/* Grid de Gráficos - CORRIGIDO */
 .chart-grid {
-    display: grid;
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 1rem;
+    width: 100%;
 }
 
 .chart-card {
@@ -170,18 +188,32 @@ body {
     padding: 1rem;
     border-radius: 8px;
     box-shadow: var(--shadow);
-    min-height: 300px; /* Altura mínima para gráficos */
+    width: 100%;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
 }
 
 .chart-card h2 {
     text-align: center;
     margin-bottom: 1rem;
-    font-size: 1.1rem;
+    font-size: 1rem;
+    line-height: 1.2;
+    padding: 0 0.5rem;
 }
 
-/* Ajuste do canvas dos gráficos para mobile */
+/* Container dos gráficos */
+.chart-container {
+    position: relative;
+    height: 200px;
+    width: 100%;
+    flex: 1;
+}
+
 .chart-card canvas {
-    max-height: 250px !important;
+    max-height: 200px !important;
+    width: 100% !important;
+    height: auto !important;
 }
 
 /* Seção do Calendário */
@@ -190,142 +222,125 @@ body {
     padding: 1rem;
     border-radius: 8px;
     box-shadow: var(--shadow);
-    overflow: hidden; /* Previne overflow horizontal */
+    width: 100%;
 }
 
 .calendar-section h2 {
     text-align: center;
     margin-bottom: 1rem;
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
-/* Estilização do FullCalendar para Mobile */
+/* FullCalendar Mobile Fix */
+#calendar {
+    width: 100%;
+    max-width: 100%;
+}
+
 .fc .fc-toolbar {
     flex-direction: column;
     gap: 0.5rem;
+    padding: 0.5rem 0;
 }
 
 .fc .fc-toolbar-title {
-    font-size: 1.1em !important;
+    font-size: 1rem !important;
+    text-align: center;
 }
 
 .fc .fc-button {
     padding: 0.4rem 0.6rem;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
+    min-height: 32px;
+}
+
+.fc .fc-view-harness {
+    min-height: 400px !important;
 }
 
 .fc .fc-daygrid-day-frame {
-    min-height: 60px !important;
+    min-height: 50px !important;
 }
 
 .fc .fc-daygrid-day-number {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     padding: 2px !important;
 }
 
 .fc-event {
-    font-size: 0.7rem !important;
-    padding: 1px 3px !important;
-    margin: 1px 0 !important;
+    font-size: 0.65rem !important;
+    padding: 1px 2px !important;
+    margin: 0 !important;
+    line-height: 1.2;
 }
 
-.fc-event.grande { background-color: #dc3545; border-color: #dc3545; }
-.fc-event.medio { background-color: #ffc107; border-color: #ffc107; }
-.fc-event.pequeno { background-color: #17a2b8; border-color: #17a2b8; }
+/* Seção do Mapa */
+.map-section {
+    background-color: var(--card-background);
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    width: 100%;
+}
 
-/* Seção da Lista de Clientes */
+.map-section h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+}
+
+#map {
+    height: 250px;
+    border-radius: 4px;
+    width: 100%;
+}
+
+/* Seção da Tabela - CORRIGIDA */
 .client-list-section {
     background-color: var(--card-background);
     padding: 1rem;
     border-radius: 8px;
     box-shadow: var(--shadow);
+    width: 100%;
     overflow-x: auto;
-    -webkit-overflow-scrolling: touch; /* Scroll suave no iOS */
+    -webkit-overflow-scrolling: touch;
 }
 
 .client-list-section h2 {
     margin-bottom: 1rem;
-    font-size: 1.1rem;
+    font-size: 1rem;
+    text-align: center;
 }
 
 #client-table {
-    width: 100%;
+    width: auto;
+    min-width: 600px;
     border-collapse: collapse;
-    min-width: 600px; /* Largura mínima para a tabela */
 }
 
 #client-table th, #client-table td {
     padding: 0.5rem;
     text-align: left;
     border-bottom: 1px solid var(--border-color);
-    font-size: 0.8rem;
+    font-size: 0.75rem;
 }
 
 #client-table th {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     text-transform: uppercase;
     color: var(--text-light);
     white-space: nowrap;
 }
 
-#client-table tbody tr:hover {
-    background-color: var(--background-color);
-}
-
-/* Classes de Status para a Tabela */
-.status-ativo {
-    color: #28a745;
-    font-weight: 700;
-}
-.status-inativo {
-    color: #dc3545;
-    font-weight: 700;
-}
-
-/* Estilos para o Mapa (Leaflet) */
-.map-section {
-    background-color: var(--card-background);
-    padding: 1rem;
-    border-radius: 8px;
-    box-shadow: var(--shadow);
-}
-
-.map-section h2 {
-    text-align: center;
-    margin-bottom: 1rem;
-    font-size: 1.1rem;
-}
-
-#map {
-    height: 300px; /* Altura menor para mobile */
-    border-radius: 4px;
-}
-
 /* Botões de Ação na Tabela */
-.btn-edit {
-    background: var(--secondary-color);
-    color: white;
-    border: none;
-    padding: 0.3rem 0.6rem;
-    border-radius: 3px;
-    cursor: pointer;
+.btn-edit, .btn-delete {
+    padding: 0.25rem 0.5rem;
     font-size: 0.7rem;
-    margin-right: 0.25rem;
-    margin-bottom: 0.25rem;
+    margin: 0.1rem;
+    min-width: 50px;
 }
 
-.btn-delete {
-    background: #dc3545;
-    color: white;
-    border: none;
-    padding: 0.3rem 0.6rem;
-    border-radius: 3px;
-    cursor: pointer;
-    font-size: 0.7rem;
-    margin-bottom: 0.25rem;
-}
-
-/* Modal - Responsivo */
+/* Modal Mobile */
 .modal {
     position: fixed;
     top: 0;
@@ -345,62 +360,18 @@ body {
     padding: 1.5rem;
     border-radius: 8px;
     width: 100%;
-    max-width: 500px;
+    max-width: 95%;
     max-height: 90vh;
     overflow-y: auto;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-.modal h3 {
-    margin-bottom: 1rem;
-    color: var(--primary-color);
-    font-size: 1.1rem;
-}
-
-/* Formulários Responsivos */
-.form-group {
-    margin-bottom: 1rem;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-    font-size: 0.85rem;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    font-size: 0.9rem;
-}
-
-.form-group textarea {
-    min-height: 80px;
-    resize: vertical;
-}
-
-.modal-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-top: 1.5rem;
-}
-
-.modal-actions button {
-    width: 100%;
-}
-
-/* Notificações para Mobile */
+/* Notificações Mobile */
 .notification {
     position: fixed;
     top: 10px;
-    right: 10px;
     left: 10px;
+    right: 10px;
     padding: 1rem;
     border-radius: 4px;
     color: white;
@@ -416,73 +387,141 @@ body {
     to { transform: translateY(0); opacity: 1; }
 }
 
-.notification.success { background: #28a745; }
-.notification.error { background: #dc3545; }
-.notification.info { background: #17a2b8; }
+/* ========== CORREÇÕES ESPECÍFICAS ========== */
 
-/* Rota */
-.route-list {
-    margin: 1rem 0;
-    padding-left: 1rem;
+/* Garante que textos longos quebrem corretamente */
+.kpi-card, .chart-card h2, .calendar-section h2, .map-section h2, .client-list-section h2 {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
-.route-list li {
-    margin-bottom: 0.5rem;
-    padding: 0.75rem;
-    background: var(--background-color);
-    border-radius: 4px;
-    border-left: 3px solid var(--secondary-color);
-    font-size: 0.9rem;
+/* Melhora a legibilidade em telas pequenas */
+@media (max-width: 380px) {
+    .kpi-container {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .kpi-card {
+        padding: 0.75rem;
+        min-height: 70px;
+    }
+    
+    .kpi-card h3 {
+        font-size: 0.7rem;
+    }
+    
+    .kpi-value {
+        font-size: 1rem;
+    }
+    
+    .kpi-card:nth-child(3) .kpi-value {
+        font-size: 0.9rem;
+    }
+    
+    .chart-card h2 {
+        font-size: 0.9rem;
+    }
 }
 
-.route-summary {
-    background: var(--background-color);
-    padding: 1rem;
-    border-radius: 4px;
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
+/* Tablets (768px pra cima) */
+@media (min-width: 768px) {
+    body {
+        font-size: 16px;
+    }
+    
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 1.5rem;
+        padding: 1.5rem;
+    }
+    
+    .sidebar {
+        order: 0;
+    }
+    
+    .content {
+        order: 1;
+        gap: 1.5rem;
+    }
+    
+    .kpi-container {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1rem;
+    }
+    
+    .kpi-card {
+        padding: 1.25rem;
+        min-height: 100px;
+    }
+    
+    .kpi-card h3 {
+        font-size: 0.9rem;
+    }
+    
+    .kpi-value {
+        font-size: 1.5rem;
+    }
+    
+    .kpi-card:nth-child(3) .kpi-value {
+        font-size: 1.3rem;
+    }
+    
+    .chart-grid {
+        grid-template-columns: 1fr 1fr;
+        display: grid;
+    }
+    
+    .chart-card h2 {
+        font-size: 1.1rem;
+    }
+    
+    #map {
+        height: 350px;
+    }
 }
 
-.route-summary p {
-    margin-bottom: 0.5rem;
+/* Desktop (1200px pra cima) */
+@media (min-width: 1200px) {
+    .dashboard-grid {
+        gap: 2rem;
+        padding: 2rem;
+    }
+    
+    .kpi-container {
+        gap: 1.5rem;
+    }
+    
+    .kpi-card {
+        padding: 1.5rem;
+    }
+    
+    .kpi-value {
+        font-size: 1.8rem;
+    }
+    
+    .kpi-card:nth-child(3) .kpi-value {
+        font-size: 1.6rem;
+    }
+    
+    #map {
+        height: 400px;
+    }
 }
 
-/* Clientes Selecionados */
-#selected-clients-list {
-    background: var(--background-color);
-    padding: 1rem;
-    border-radius: 4px;
-    margin-top: 1rem;
+/* Correção para textos muito longos nos KPIs */
+.kpi-value {
+    hyphens: auto;
+    -webkit-hyphens: auto;
 }
 
-#selected-clients-names {
-    max-height: 120px;
-    overflow-y: auto;
+/* Garante que o layout não quebre */
+.dashboard-grid > * {
+    min-width: 0; /* Permite que elementos encolham */
 }
 
-.selected-client-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem;
-    background: white;
-    margin-bottom: 0.25rem;
-    border-radius: 4px;
-    font-size: 0.85rem;
-}
-
-.remove-selected {
-    background: #dc3545;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-    font-size: 0.7rem;
-    flex-shrink: 0;
-}
-
+/* Action Group na Sidebar */
 .action-group {
     margin-top: 1.5rem;
     padding-top: 1rem;
@@ -495,209 +534,11 @@ body {
     color: var(--text-light);
 }
 
-/* ========== MEDIA QUERIES ========== */
+/* Status colors */
+.status-ativo { color: #28a745; font-weight: 700; }
+.status-inativo { color: #dc3545; font-weight: 700; }
 
-/* Tablets (768px pra cima) */
-@media (min-width: 768px) {
-    body {
-        font-size: 16px;
-    }
-    
-    .header {
-        padding: 1rem 2rem;
-    }
-    
-    .header h1 {
-        font-size: 1.8rem;
-    }
-    
-    .dashboard-grid {
-        gap: 1.5rem;
-        padding: 1.5rem;
-    }
-    
-    .sidebar {
-        padding: 1.5rem;
-    }
-    
-    .content {
-        gap: 1.5rem;
-    }
-    
-    .kpi-container {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1rem;
-    }
-    
-    .kpi-card {
-        padding: 1.25rem;
-    }
-    
-    .kpi-value {
-        font-size: 1.8rem;
-    }
-    
-    .chart-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 1.5rem;
-    }
-    
-    .chart-card {
-        padding: 1.5rem;
-    }
-    
-    .calendar-section,
-    .map-section,
-    .client-list-section {
-        padding: 1.5rem;
-    }
-    
-    #map {
-        height: 350px;
-    }
-    
-    .modal-actions {
-        flex-direction: row;
-        justify-content: flex-end;
-    }
-    
-    .modal-actions button {
-        width: auto;
-    }
-    
-    .notification {
-        right: 20px;
-        left: auto;
-        width: auto;
-        max-width: 400px;
-    }
-}
-
-/* Desktop (1200px pra cima) */
-@media (min-width: 1200px) {
-    .dashboard-grid {
-        grid-template-columns: 300px 1fr;
-        gap: 2rem;
-        padding: 2rem;
-    }
-    
-    .sidebar {
-        order: 0; /* Sidebar volta para a esquerda */
-    }
-    
-    .content {
-        order: 1;
-        gap: 2rem;
-    }
-    
-    .kpi-container {
-        gap: 1.5rem;
-    }
-    
-    .kpi-card {
-        padding: 1.5rem;
-    }
-    
-    .kpi-value {
-        font-size: 2rem;
-    }
-    
-    .chart-grid {
-        gap: 2rem;
-    }
-    
-    .chart-card {
-        padding: 1.5rem;
-    }
-    
-    #map {
-        height: 400px;
-    }
-    
-    #client-table th, #client-table td {
-        padding: 0.75rem;
-        font-size: 0.9rem;
-    }
-    
-    .btn-edit,
-    .btn-delete {
-        padding: 0.4rem 0.8rem;
-        font-size: 0.8rem;
-    }
-}
-
-/* Telas muito pequenas (até 360px) */
-@media (max-width: 360px) {
-    .dashboard-grid {
-        padding: 0.5rem;
-        gap: 0.75rem;
-    }
-    
-    .kpi-container {
-        grid-template-columns: 1fr;
-        gap: 0.5rem;
-    }
-    
-    .kpi-card {
-        padding: 0.75rem;
-    }
-    
-    .kpi-value {
-        font-size: 1.3rem;
-    }
-    
-    .sidebar,
-    .chart-card,
-    .calendar-section,
-    .map-section,
-    .client-list-section {
-        padding: 0.75rem;
-    }
-    
-    #map {
-        height: 250px;
-    }
-    
-    .modal-content {
-        padding: 1rem;
-        margin: 0.5rem;
-    }
-}
-
-/* Orientação Landscape em Mobile */
-@media (max-height: 500px) and (orientation: landscape) {
-    .modal-content {
-        max-height: 80vh;
-    }
-    
-    #map {
-        height: 250px;
-    }
-    
-    .kpi-container {
-        grid-template-columns: repeat(4, 1fr);
-    }
-}
-
-/* Ajustes para telas de alta densidade (Retina) */
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-    .kpi-value {
-        font-weight: 600;
-    }
-}
-
-/* Prevenir zoom em inputs no iOS */
-@media screen and (max-width: 768px) {
-    input, select, textarea {
-        font-size: 16px !important; /* Previne zoom no iOS */
-    }
-}
-
-/* Melhorias de acessibilidade */
-@media (prefers-reduced-motion: reduce) {
-    * {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-}
+/* Event colors */
+.fc-event.grande { background-color: #dc3545; border-color: #dc3545; }
+.fc-event.medio { background-color: #ffc107; border-color: #ffc107; }
+.fc-event.pequeno { background-color: #17a2b8; border-color: #17a2b8; }

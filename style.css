@@ -1,9 +1,9 @@
-/* Arquivo: dashboard/css/style.css - VERSÃO CORRIGIDA PARA SMARTPHONE */
+/* Arquivo: dashboard/css/style.css */
 
 /* Variáveis de Cor e Fontes */
 :root {
-    --primary-color: #0a4f70;
-    --secondary-color: #4ab8a1;
+    --primary-color: #0a4f70; /* Azul escuro */
+    --secondary-color: #4ab8a1; /* Verde-água */
     --background-color: #f4f7f6;
     --card-background: #ffffff;
     --text-color: #333333;
@@ -25,52 +25,41 @@ body {
     background-color: var(--background-color);
     color: var(--text-color);
     line-height: 1.6;
-    font-size: 14px;
 }
 
-/* Header - Mobile First */
+/* Header */
 .header {
     background-color: var(--primary-color);
     color: white;
-    padding: 1rem;
+    padding: 1rem 2rem;
     text-align: center;
-    position: sticky;
-    top: 0;
-    z-index: 100;
 }
 
 .header h1 {
-    font-size: 1.3rem;
+    font-size: 1.8rem;
     margin-bottom: 0.25rem;
 }
 
-.header p {
-    font-size: 0.8rem;
-    opacity: 0.9;
-}
-
-/* Layout Principal - MOBILE FIRST */
+/* Layout Principal com Grid */
 .dashboard-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
-    max-width: 100%;
-    overflow-x: hidden;
+    display: grid;
+    grid-template-columns: 280px 1fr; /* Sidebar fixa e conteúdo flexível */
+    gap: 2rem;
+    padding: 2rem;
 }
 
-/* Sidebar - Mobile First */
+/* Sidebar de Filtros */
 .sidebar {
     background-color: var(--card-background);
-    padding: 1rem;
+    padding: 1.5rem;
     border-radius: 8px;
     box-shadow: var(--shadow);
-    order: 2; /* Sidebar por último no mobile */
+    height: fit-content;
 }
 
 .sidebar h2 {
-    font-size: 1.1rem;
-    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 0.5rem;
 }
@@ -83,16 +72,16 @@ body {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 600;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
 }
 
 .filter-group input,
 .filter-group select {
     width: 100%;
-    padding: 0.75rem;
+    padding: 0.5rem;
     border: 1px solid var(--border-color);
     border-radius: 4px;
-    font-size: 16px; /* Previne zoom no iOS */
+    font-size: 0.9rem;
 }
 
 .btn-primary {
@@ -102,7 +91,7 @@ body {
     color: white;
     border: none;
     border-radius: 4px;
-    font-size: 0.9rem;
+    font-size: 1rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
@@ -119,228 +108,204 @@ body {
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    font-size: 0.9rem;
-    width: 100%;
 }
 
-/* Conteúdo Principal - MOBILE FIRST */
+.btn-secondary:hover {
+    background: #5a6268;
+}
+
+/* Conteúdo Principal */
 .content {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    order: 1; /* Conteúdo primeiro no mobile */
-    width: 100%;
+    gap: 2rem;
 }
 
-/* Cards de KPI - CORRIGIDO PARA MOBILE */
+/* Cards de KPI */
 .kpi-container {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.75rem;
-    width: 100%;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
 }
 
 .kpi-card {
     background-color: var(--card-background);
-    padding: 1rem;
+    padding: 1.5rem;
     border-radius: 8px;
     box-shadow: var(--shadow);
     text-align: center;
-    min-height: 80px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    word-wrap: break-word;
-    overflow: hidden;
 }
 
 .kpi-card h3 {
-    font-size: 0.75rem;
+    font-size: 1rem;
     color: var(--text-light);
     margin-bottom: 0.5rem;
-    line-height: 1.2;
 }
 
 .kpi-value {
-    font-size: 1.2rem;
+    font-size: 2rem;
     font-weight: 700;
     color: var(--primary-color);
-    line-height: 1.2;
-    word-break: break-word;
 }
 
-/* CORREÇÃO ESPECÍFICA para o KPI de faturamento */
-.kpi-card:nth-child(3) .kpi-value {
-    font-size: 1rem; /* Menor para caber valores longos */
-    font-weight: 600;
-}
-
-/* Grid de Gráficos - CORRIGIDO */
+/* Grid de Gráficos */
 .chart-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
 }
 
 .chart-card {
     background-color: var(--card-background);
-    padding: 1rem;
+    padding: 1.5rem;
     border-radius: 8px;
     box-shadow: var(--shadow);
-    width: 100%;
-    min-height: 280px;
-    display: flex;
-    flex-direction: column;
 }
 
 .chart-card h2 {
     text-align: center;
     margin-bottom: 1rem;
-    font-size: 1rem;
-    line-height: 1.2;
-    padding: 0 0.5rem;
-}
-
-/* Container dos gráficos */
-.chart-container {
-    position: relative;
-    height: 200px;
-    width: 100%;
-    flex: 1;
-}
-
-.chart-card canvas {
-    max-height: 200px !important;
-    width: 100% !important;
-    height: auto !important;
+    font-size: 1.2rem;
 }
 
 /* Seção do Calendário */
 .calendar-section {
     background-color: var(--card-background);
-    padding: 1rem;
+    padding: 1.5rem;
     border-radius: 8px;
     box-shadow: var(--shadow);
-    width: 100%;
 }
 
 .calendar-section h2 {
     text-align: center;
     margin-bottom: 1rem;
-    font-size: 1rem;
+    font-size: 1.2rem;
 }
 
-/* FullCalendar Mobile Fix */
-#calendar {
-    width: 100%;
-    max-width: 100%;
+/* Estilização do FullCalendar */
+:root {
+    --fc-border-color: var(--border-color);
+    --fc-today-bg-color: rgba(74, 184, 161, 0.1);
 }
-
-.fc .fc-toolbar {
-    flex-direction: column;
-    gap: 0.5rem;
-    padding: 0.5rem 0;
-}
-
 .fc .fc-toolbar-title {
-    font-size: 1rem !important;
-    text-align: center;
+    font-size: 1.2em;
 }
+.fc-event.grande { background-color: #dc3545; border-color: #dc3545; }
+.fc-event.medio { background-color: #ffc107; border-color: #ffc107; }
+.fc-event.pequeno { background-color: #17a2b8; border-color: #17a2b8; }
 
-.fc .fc-button {
-    padding: 0.4rem 0.6rem;
-    font-size: 0.75rem;
-    min-height: 32px;
-}
-
-.fc .fc-view-harness {
-    min-height: 400px !important;
-}
-
-.fc .fc-daygrid-day-frame {
-    min-height: 50px !important;
-}
-
-.fc .fc-daygrid-day-number {
-    font-size: 0.7rem;
-    padding: 2px !important;
-}
-
-.fc-event {
-    font-size: 0.65rem !important;
-    padding: 1px 2px !important;
-    margin: 0 !important;
-    line-height: 1.2;
-}
-
-/* Seção do Mapa */
-.map-section {
+/* Seção da Lista de Clientes */
+.client-list-section {
     background-color: var(--card-background);
-    padding: 1rem;
+    padding: 1.5rem;
     border-radius: 8px;
     box-shadow: var(--shadow);
+    overflow-x: auto; /* Para tabelas largas */
+}
+
+.client-list-section h2 {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+#client-table {
     width: 100%;
+    border-collapse: collapse;
+}
+
+#client-table th, #client-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+#client-table th {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    color: var(--text-light);
+}
+
+#client-table tbody tr:hover {
+    background-color: var(--background-color);
+}
+
+/* Classes de Status para a Tabela */
+.status-ativo {
+    color: #28a745;
+    font-weight: 700;
+}
+.status-inativo {
+    color: #dc3545;
+    font-weight: 700;
+}
+
+/* Responsividade */
+@media (max-width: 1200px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr; /* Empilha a sidebar e o conteúdo */
+    }
+    .sidebar {
+        grid-row: 1; /* Garante que a sidebar venha primeiro */
+    }
+}
+
+@media (max-width: 768px) {
+    .chart-grid {
+        grid-template-columns: 1fr; /* Gráficos um abaixo do outro */
+    }
+    .kpi-container {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+    .header {
+        padding: 1rem;
+    }
+    .dashboard-grid {
+        padding: 1rem;
+    }
+}
+
+/* Estilos para o Mapa (Leaflet) */
+.map-section {
+    background-color: var(--card-background);
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
 }
 
 .map-section h2 {
     text-align: center;
     margin-bottom: 1rem;
-    font-size: 1rem;
+    font-size: 1.2rem;
 }
 
 #map {
-    height: 250px;
+    height: 400px; /* Altura fixa para o mapa */
     border-radius: 4px;
-    width: 100%;
 }
 
-/* Seção da Tabela - CORRIGIDA */
-.client-list-section {
-    background-color: var(--card-background);
-    padding: 1rem;
-    border-radius: 8px;
-    box-shadow: var(--shadow);
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+/* Botões de Ação */
+.btn-edit {
+    background: var(--secondary-color);
+    color: white;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    margin-right: 0.25rem;
 }
 
-.client-list-section h2 {
-    margin-bottom: 1rem;
-    font-size: 1rem;
-    text-align: center;
+.btn-delete {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.8rem;
 }
 
-#client-table {
-    width: auto;
-    min-width: 600px;
-    border-collapse: collapse;
-}
-
-#client-table th, #client-table td {
-    padding: 0.5rem;
-    text-align: left;
-    border-bottom: 1px solid var(--border-color);
-    font-size: 0.75rem;
-}
-
-#client-table th {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    color: var(--text-light);
-    white-space: nowrap;
-}
-
-/* Botões de Ação na Tabela */
-.btn-edit, .btn-delete {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.7rem;
-    margin: 0.1rem;
-    min-width: 50px;
-}
-
-/* Modal Mobile */
+/* Modal */
 .modal {
     position: fixed;
     top: 0;
@@ -352,193 +317,151 @@ body {
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    padding: 1rem;
 }
 
 .modal-content {
     background: white;
-    padding: 1.5rem;
+    padding: 2rem;
     border-radius: 8px;
-    width: 100%;
-    max-width: 95%;
-    max-height: 90vh;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
     overflow-y: auto;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-/* Notificações Mobile */
+.modal h3 {
+    margin-bottom: 1.5rem;
+    color: var(--primary-color);
+}
+
+/* Formulários */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.form-group textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+}
+
+/* Notificações */
 .notification {
     position: fixed;
-    top: 10px;
-    left: 10px;
-    right: 10px;
-    padding: 1rem;
+    top: 20px;
+    right: 20px;
+    padding: 1rem 1.5rem;
     border-radius: 4px;
     color: white;
     z-index: 1001;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     animation: slideIn 0.3s ease;
-    text-align: center;
-    font-size: 0.9rem;
 }
 
 @keyframes slideIn {
-    from { transform: translateY(-100%); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
 }
 
-/* ========== CORREÇÕES ESPECÍFICAS ========== */
+.notification.success { background: #28a745; }
+.notification.error { background: #dc3545; }
+.notification.info { background: #17a2b8; }
 
-/* Garante que textos longos quebrem corretamente */
-.kpi-card, .chart-card h2, .calendar-section h2, .map-section h2, .client-list-section h2 {
-    word-wrap: break-word;
-    overflow-wrap: break-word;
+/* Rota */
+.route-list {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
 }
 
-/* Melhora a legibilidade em telas pequenas */
-@media (max-width: 380px) {
-    .kpi-container {
-        grid-template-columns: 1fr;
-        gap: 0.5rem;
-    }
-    
-    .kpi-card {
-        padding: 0.75rem;
-        min-height: 70px;
-    }
-    
-    .kpi-card h3 {
-        font-size: 0.7rem;
-    }
-    
-    .kpi-value {
-        font-size: 1rem;
-    }
-    
-    .kpi-card:nth-child(3) .kpi-value {
-        font-size: 0.9rem;
-    }
-    
-    .chart-card h2 {
-        font-size: 0.9rem;
-    }
+.route-list li {
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+    background: var(--background-color);
+    border-radius: 4px;
+    border-left: 3px solid var(--secondary-color);
 }
 
-/* Tablets (768px pra cima) */
-@media (min-width: 768px) {
-    body {
-        font-size: 16px;
-    }
-    
-    .dashboard-grid {
-        display: grid;
-        grid-template-columns: 280px 1fr;
-        gap: 1.5rem;
-        padding: 1.5rem;
-    }
-    
-    .sidebar {
-        order: 0;
-    }
-    
-    .content {
-        order: 1;
-        gap: 1.5rem;
-    }
-    
-    .kpi-container {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 1rem;
-    }
-    
-    .kpi-card {
-        padding: 1.25rem;
-        min-height: 100px;
-    }
-    
-    .kpi-card h3 {
-        font-size: 0.9rem;
-    }
-    
-    .kpi-value {
-        font-size: 1.5rem;
-    }
-    
-    .kpi-card:nth-child(3) .kpi-value {
-        font-size: 1.3rem;
-    }
-    
-    .chart-grid {
-        grid-template-columns: 1fr 1fr;
-        display: grid;
-    }
-    
-    .chart-card h2 {
-        font-size: 1.1rem;
-    }
-    
-    #map {
-        height: 350px;
-    }
+.route-summary {
+    background: var(--background-color);
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
 }
 
-/* Desktop (1200px pra cima) */
-@media (min-width: 1200px) {
-    .dashboard-grid {
-        gap: 2rem;
-        padding: 2rem;
-    }
-    
-    .kpi-container {
-        gap: 1.5rem;
-    }
-    
-    .kpi-card {
-        padding: 1.5rem;
-    }
-    
-    .kpi-value {
-        font-size: 1.8rem;
-    }
-    
-    .kpi-card:nth-child(3) .kpi-value {
-        font-size: 1.6rem;
-    }
-    
-    #map {
-        height: 400px;
-    }
+.route-summary p {
+    margin-bottom: 0.5rem;
 }
 
-/* Correção para textos muito longos nos KPIs */
-.kpi-value {
-    hyphens: auto;
-    -webkit-hyphens: auto;
+/* Clientes Selecionados */
+.client-marker.selected {
+    filter: hue-rotate(90deg);
 }
 
-/* Garante que o layout não quebre */
-.dashboard-grid > * {
-    min-width: 0; /* Permite que elementos encolham */
+#selected-clients-list {
+    background: var(--background-color);
+    padding: 1rem;
+    border-radius: 4px;
+    margin-top: 1rem;
 }
 
-/* Action Group na Sidebar */
+#selected-clients-names {
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.selected-client-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background: white;
+    margin-bottom: 0.25rem;
+    border-radius: 4px;
+}
+
+.remove-selected {
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    font-size: 0.7rem;
+}
+
 .action-group {
-    margin-top: 1.5rem;
-    padding-top: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
     border-top: 1px solid var(--border-color);
 }
 
 .action-group h3 {
-    font-size: 0.9rem;
+    font-size: 1rem;
     margin-bottom: 1rem;
     color: var(--text-light);
 }
-
-/* Status colors */
-.status-ativo { color: #28a745; font-weight: 700; }
-.status-inativo { color: #dc3545; font-weight: 700; }
-
-/* Event colors */
-.fc-event.grande { background-color: #dc3545; border-color: #dc3545; }
-.fc-event.medio { background-color: #ffc107; border-color: #ffc107; }
-.fc-event.pequeno { background-color: #17a2b8; border-color: #17a2b8; }

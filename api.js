@@ -1,4 +1,4 @@
-// Arquivo: js/api.js
+// Arquivo: dashboard/js/api.js
 
 class ClientAPI {
     constructor() {
@@ -7,47 +7,39 @@ class ClientAPI {
         this.initData();
     }
 
+    // Inicializa com dados mock se não existir
     initData() {
-        // Limpa localStorage para teste (opcional - remova depois)
-        // localStorage.removeItem(this.storageKey);
-        // localStorage.removeItem(this.eventsKey);
-        
         if (!localStorage.getItem(this.storageKey)) {
-            console.log('📦 Inicializando dados no localStorage...');
             localStorage.setItem(this.storageKey, JSON.stringify(CLIENTS_DATA));
+        }
+        if (!localStorage.getItem(this.eventsKey)) {
             localStorage.setItem(this.eventsKey, JSON.stringify(EVENTS_DATA));
-            console.log('✅ Dados iniciais salvos no localStorage');
-        } else {
-            console.log('📦 Dados já existem no localStorage');
         }
     }
 
+    // GET - Buscar todos os clientes
     async getClients() {
         try {
             const data = localStorage.getItem(this.storageKey);
-            if (!data) {
-                console.log('❌ Nenhum dado encontrado no localStorage');
-                return [];
-            }
-            const clients = JSON.parse(data);
-            console.log('📊 Clientes carregados:', clients.length);
-            return clients;
+            return JSON.parse(data);
         } catch (error) {
-            console.error('❌ Erro ao carregar clientes:', error);
+            console.error('Erro ao buscar clientes:', error);
             return [];
         }
     }
 
+    // GET - Buscar eventos do calendário
     async getEvents() {
         try {
             const data = localStorage.getItem(this.eventsKey);
-            return data ? JSON.parse(data) : [];
+            return JSON.parse(data);
         } catch (error) {
-            console.error('❌ Erro ao carregar eventos:', error);
+            console.error('Erro ao buscar eventos:', error);
             return [];
         }
     }
 
+    // PUT - Atualizar cliente
     async updateClient(clientId, updates) {
         try {
             const clients = await this.getClients();
@@ -57,7 +49,7 @@ class ClientAPI {
             if (index !== -1) {
                 clients[index] = { ...clients[index], ...updates };
                 
-                // Atualiza evento no calendário
+                // Atualizar evento no calendário se a data de contato mudou
                 if (updates.next_contact) {
                     const eventIndex = events.findIndex(e => e.extendedProps.clientId === clientId);
                     if (eventIndex !== -1) {
@@ -68,23 +60,21 @@ class ClientAPI {
                 
                 localStorage.setItem(this.storageKey, JSON.stringify(clients));
                 localStorage.setItem(this.eventsKey, JSON.stringify(events));
-                console.log('✅ Cliente atualizado:', clientId);
                 return clients[index];
             }
             throw new Error('Cliente não encontrado');
         } catch (error) {
-            console.error('❌ Erro ao atualizar cliente:', error);
+            console.error('Erro ao atualizar cliente:', error);
             throw error;
         }
     }
 
+    // POST - Criar novo cliente
     async createClient(clientData) {
         try {
             const clients = await this.getClients();
             const events = await this.getEvents();
-            
-            const maxId = clients.length > 0 ? Math.max(...clients.map(c => c.id)) : 0;
-            const newId = maxId + 1;
+            const newId = Math.max(...clients.map(c => c.id)) + 1;
             
             const newClient = {
                 id: newId,
@@ -93,6 +83,7 @@ class ClientAPI {
                 lng: CURITIBA_CENTER[1] + (Math.random() - 0.5) * 0.1
             };
             
+            // Criar evento no calendário
             const newEvent = {
                 title: `Contato: ${newClient.name}`,
                 start: newClient.next_contact,
@@ -108,32 +99,27 @@ class ClientAPI {
             
             localStorage.setItem(this.storageKey, JSON.stringify(clients));
             localStorage.setItem(this.eventsKey, JSON.stringify(events));
-            
-            console.log('✅ Novo cliente criado:', newClient.name);
             return newClient;
         } catch (error) {
-            console.error('❌ Erro ao criar cliente:', error);
+            console.error('Erro ao criar cliente:', error);
             throw error;
         }
     }
 
+    // DELETE - Remover cliente
     async deleteClient(clientId) {
         try {
             let clients = await this.getClients();
             let events = await this.getEvents();
-            
-            const clientName = clients.find(c => c.id === clientId)?.name;
             
             clients = clients.filter(c => c.id !== clientId);
             events = events.filter(e => e.extendedProps.clientId !== clientId);
             
             localStorage.setItem(this.storageKey, JSON.stringify(clients));
             localStorage.setItem(this.eventsKey, JSON.stringify(events));
-            
-            console.log('✅ Cliente deletado:', clientName);
             return true;
         } catch (error) {
-            console.error('❌ Erro ao deletar cliente:', error);
+            console.error('Erro ao deletar cliente:', error);
             throw error;
         }
     }

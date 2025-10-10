@@ -1,4 +1,4 @@
-// Arquivo: js/data.js
+// Arquivo: dashboard/js/data.js
 
 const CLIENT_NAMES = [
     "Hospital Santa Clara", "Clínica São Lucas", "Maternidade Esperança", "Laboratório Central", "Centro Médico Alfa",
@@ -10,7 +10,6 @@ const CLIENT_NAMES = [
 ];
 
 const PORTE = ["Grande", "Médio", "Pequeno"];
-const CURITIBA_CENTER = [-25.4284, -49.2733];
 
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -24,25 +23,23 @@ function generateMockClients(count) {
     const clients = [];
     for (let i = 1; i <= count; i++) {
         const porte = PORTE[getRandomInt(0, 2)];
-        let revenue, frequency;
+        let revenue;
+        let frequency;
 
         if (porte === "Grande") {
             revenue = getRandomInt(50000, 150000);
-            frequency = getRandomInt(7, 15);
+            frequency = getRandomInt(7, 15); // Dias
         } else if (porte === "Médio") {
             revenue = getRandomInt(15000, 49999);
-            frequency = getRandomInt(15, 30);
-        } else {
+            frequency = getRandomInt(15, 30); // Dias
+        } else { // Pequeno
             revenue = getRandomInt(1000, 14999);
-            frequency = getRandomInt(30, 90);
+            frequency = getRandomInt(30, 90); // Dias
         }
 
-        const lastServiceDate = getRandomDate(new Date(2024, 0, 1), new Date());
+        const lastServiceDate = getRandomDate(new Date(2024, 0, 1), new Date(2024, 9, 10));
         const nextContactDate = new Date(lastServiceDate);
         nextContactDate.setDate(lastServiceDate.getDate() + getRandomInt(10, 60));
-
-        const lat = CURITIBA_CENTER[0] + (Math.random() - 0.5) * 0.1;
-        const lng = CURITIBA_CENTER[1] + (Math.random() - 0.5) * 0.1;
 
         clients.push({
             id: i,
@@ -54,30 +51,35 @@ function generateMockClients(count) {
             last_service: lastServiceDate.toISOString().split('T')[0],
             next_contact: nextContactDate.toISOString().split('T')[0],
             address: `Rua Fictícia, ${getRandomInt(100, 999)} - Curitiba/PR`,
-            status: "Ativo",
-            email: `contato@cliente${i}.com.br`,
-            phone: `(41) 9${getRandomInt(1000, 9999)}-${getRandomInt(1000, 9999)}`,
-            lat: lat,
-            lng: lng
+            status: (Math.random() > 0.95) ? "Inativo" : "Ativo",
+            email: `contato@${CLIENT_NAMES[getRandomInt(0, CLIENT_NAMES.length - 1)].toLowerCase().replace(/\s+/g, '')}.com.br`,
+            phone: `(41) 9${getRandomInt(1000, 9999)}-${getRandomInt(1000, 9999)}`
         });
     }
     return clients;
 }
 
-// Gera dados
-const CLIENTS_DATA = generateMockClients(50); // Reduzido para 50 para teste
+const CLIENTS_DATA = generateMockClients(250);
 
-// Gera eventos
+// Gerar eventos de contato para o calendário
 const EVENTS_DATA = CLIENTS_DATA.map(client => {
     return {
         title: `Contato: ${client.name}`,
         start: client.next_contact,
         allDay: true,
-        classNames: [client.porte.toLowerCase()],
+        classNames: [client.porte.toLowerCase()], // Para estilização no calendário
         extendedProps: {
             clientId: client.id
         }
     };
 });
 
-console.log('✅ data.js carregado -', CLIENTS_DATA.length, 'clientes gerados');
+// Coordenadas de Curitiba (fictícias para simulação)
+const CURITIBA_CENTER = [-25.4284, -49.2733];
+
+// Adiciona coordenadas fictícias aos clientes para simulação
+CLIENTS_DATA.forEach(client => {
+    // Gera coordenadas aleatórias próximas ao centro de Curitiba
+    client.lat = CURITIBA_CENTER[0] + (Math.random() - 0.5) * 0.1;
+    client.lng = CURITIBA_CENTER[1] + (Math.random() - 0.5) * 0.1;
+});

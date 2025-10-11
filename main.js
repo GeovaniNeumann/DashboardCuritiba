@@ -8,6 +8,108 @@ function checkAuth() {
     return true;
 }
 
+// Função para configurar o botão de logout
+function setupLogoutButton() {
+    const header = document.querySelector('.header');
+    if (!header) return;
+    
+    // Remove botão existente se houver
+    const existingBtn = document.getElementById('logout-btn');
+    if (existingBtn) existingBtn.remove();
+    
+    // Verifica se já tem um container flex
+    let headerContainer = header.querySelector('div');
+    if (!headerContainer || headerContainer.style.display !== 'flex') {
+        headerContainer = document.createElement('div');
+        headerContainer.style.display = 'flex';
+        headerContainer.style.alignItems = 'center';
+        headerContainer.style.justifyContent = 'space-between';
+        headerContainer.style.width = '100%';
+        
+        // Move o conteúdo original para o novo container
+        while (header.firstChild) {
+            headerContainer.appendChild(header.firstChild);
+        }
+        header.appendChild(headerContainer);
+    }
+    
+    // Cria novo botão de logout
+    const logoutBtn = document.createElement('button');
+    logoutBtn.id = 'logout-btn';
+    logoutBtn.textContent = '🚪 Sair';
+    logoutBtn.className = 'btn-secondary';
+    logoutBtn.style.marginLeft = 'auto';
+    logoutBtn.style.marginRight = '1rem';
+    
+    // Event listener corrigido
+    logoutBtn.addEventListener('click', function() {
+        console.log('🔒 Tentando fazer logout...');
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('user_role');
+        window.location.href = 'login.html';
+    });
+    
+    headerContainer.appendChild(logoutBtn);
+    console.log('✅ Botão de logout configurado');
+}
+
+// Função básica de gestão de usuários
+function initUserManagement() {
+    console.log('👥 Inicializando gestão de usuários...');
+    
+    const content = document.querySelector('.content');
+    if (!content) return;
+    
+    // Verifica se já existe a seção
+    if (document.querySelector('.user-management-section')) return;
+    
+    const userSection = document.createElement('div');
+    userSection.className = 'user-management-section';
+    userSection.style.cssText = `
+        background-color: var(--card-background);
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+        margin-top: 2rem;
+    `;
+    
+    userSection.innerHTML = `
+        <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h2 style="margin: 0;">👥 Gestão de Usuários</h2>
+            <button class="btn-primary" id="add-user-btn">+ Adicionar Usuário</button>
+        </div>
+        <div class="user-list">
+            <table id="user-table" style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th style="padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; text-transform: uppercase; color: var(--text-light);">Nome</th>
+                        <th style="padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; text-transform: uppercase; color: var(--text-light);">E-mail</th>
+                        <th style="padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; text-transform: uppercase; color: var(--text-light);">Perfil</th>
+                        <th style="padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 0.9rem; text-transform: uppercase; color: var(--text-light);">Status</th>
+                    </tr>
+                </thead>
+                <tbody id="user-table-body">
+                    <tr>
+                        <td style="padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border-color);">Administrador</td>
+                        <td style="padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border-color);">admin@admin.com</td>
+                        <td style="padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border-color); color: #dc3545; font-weight: 700;">Administrador</td>
+                        <td style="padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--border-color); color: #28a745; font-weight: 700;">Ativo</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    content.appendChild(userSection);
+
+    // Adicionar event listener básico
+    document.getElementById('add-user-btn').addEventListener('click', function() {
+        showNotification('Funcionalidade de adicionar usuários em desenvolvimento', 'info');
+    });
+    
+    console.log('✅ Gestão de usuários inicializada');
+}
+
 /**
  * Formata um valor em centavos para moeda brasileira
  @param {number} centavos - Valor em centavos (ex: 1000000 = R$ 10.000,00)
@@ -74,6 +176,15 @@ function showNotification(message, type = 'info') {
         box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         animation: slideIn 0.3s ease;
     `;
+    
+    // Cores baseadas no tipo
+    if (type === 'success') {
+        notification.style.background = '#28a745';
+    } else if (type === 'error') {
+        notification.style.background = '#dc3545';
+    } else {
+        notification.style.background = '#17a2b8';
+    }
     
     document.body.appendChild(notification);
 
@@ -165,7 +276,7 @@ function openEditModal(client) {
             cnpj: formData.get('cnpj'),
             porte: formData.get('porte'),
             status: formData.get('status'),
-            revenue_ytd: prepararParaBancoDeDados(formData.get('revenue_ytd')), // CONVERTIDO PARA CENTAVOS
+            revenue_ytd: prepararParaBancoDeDados(formData.get('revenue_ytd')),
             frequency_days: parseInt(formData.get('frequency_days')),
             last_service: formData.get('last_service'),
             next_contact: formData.get('next_contact'),
@@ -255,7 +366,7 @@ function openCreateModal() {
             cnpj: formData.get('cnpj'),
             porte: formData.get('porte'),
             status: formData.get('status'),
-            revenue_ytd: prepararParaBancoDeDados(formData.get('revenue_ytd')), // CONVERTIDO PARA CENTAVOS
+            revenue_ytd: prepararParaBancoDeDados(formData.get('revenue_ytd')),
             frequency_days: parseInt(formData.get('frequency_days')),
             last_service: formData.get('last_service'),
             next_contact: formData.get('next_contact'),
@@ -319,7 +430,7 @@ function renderClientTable(clients) {
         // Status
         const statusCell = row.insertCell();
         statusCell.textContent = client.status || 'N/A';
-        statusCell.classList.add(client.status === 'Ativo' ? 'status-ativo' : 'status-inativo');
+        statusCell.className = client.status === 'Ativo' ? 'status-ativo' : 'status-inativo';
         
         // Faturamento YTD
         const revenueCell = row.insertCell();
@@ -775,13 +886,16 @@ function setupEventListeners() {
     });
 }
 
-// 13. Função de Inicialização (VERSÃO SIMPLIFICADA)
+// 13. Função de Inicialização (VERSÃO COMPLETA)
 async function initDashboard() {
     try {
         console.log('🚀 Iniciando dashboard...');
         
         // VERIFICAR AUTENTICAÇÃO PRIMEIRO
         if (!checkAuth()) return;
+        
+        // CONFIGURAR BOTÃO DE LOGOUT IMEDIATAMENTE
+        setupLogoutButton();
         
         // AGUARDAR para auth carregar
         await new Promise(resolve => setTimeout(resolve, 1000));
@@ -797,15 +911,16 @@ async function initDashboard() {
         initMap();
         setupEventListeners();
         
-        // GESTÃO DE USUÁRIOS (se disponível)
+        // GESTÃO DE USUÁRIOS (se for admin)
         setTimeout(() => {
-            if (typeof authService !== 'undefined' && authService.isAdmin && 
-                typeof initUserManagement !== 'undefined') {
-                if (authService.isAdmin()) {
-                    initUserManagement();
-                }
+            const isAdmin = localStorage.getItem('user_role') === 'admin';
+            console.log('👤 Verificando permissões admin:', isAdmin);
+            
+            if (isAdmin) {
+                console.log('🎯 Usuário é admin, ativando gestão de usuários...');
+                initUserManagement();
             }
-        }, 2000);
+        }, 1500);
         
         console.log('✅ Dashboard inicializado com sucesso!');
         
@@ -827,3 +942,8 @@ window.closeModal = closeModal;
 window.selectClientForRoute = selectClientForRoute;
 window.formatarParaMoeda = formatarParaMoeda;
 window.prepararParaBancoDeDados = prepararParaBancoDeDados;
+window.globalLogout = function() {
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('user_role');
+    window.location.href = 'login.html';
+};

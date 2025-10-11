@@ -1,11 +1,17 @@
-// Arquivo: dashboard/js/api.js (Versão Supabase Corrigida)
+// Arquivo: dashboard/js/api.js (Versão com Autenticação)
 
 // CONFIGURAÇÃO DO SUPABASE
 const SUPABASE_URL = 'https://vpvmfcxisbjocuekuwfj.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZwdm1mY3hpc2Jqb2N1ZWt1d2ZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAxMDM4NjIsImV4cCI6MjA3NTY3OTg2Mn0.r5B79_FTin9YcpDBGqjmTz-Z6Jq09W1XDQ4XuV1DhFI';
 
-// Inicializar o cliente Supabase
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Inicializar o cliente Supabase com autenticação
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true
+    }
+});
 
 // Coordenadas de Curitiba
 const CURITIBA_CENTER = [-25.4284, -49.2733];
@@ -13,17 +19,45 @@ const CURITIBA_CENTER = [-25.4284, -49.2733];
 class ClientAPI {
     constructor() {
         console.log('✅ ClientAPI inicializada com Supabase');
+        this.currentUser = null;
+        this.checkAuth();
     }
 
-    // GET - Buscar todos os clientes (CORRIGIDO)
+    // Verificar autenticação do usuário atual
+    async checkAuth() {
+        try {
+            const { data: { user }, error } = await supabase.auth.getUser();
+            if (!error && user) {
+                this.currentUser = user;
+                console.log('👤 Usuário autenticado:', user.email);
+            }
+        } catch (error) {
+            console.error('❌ Erro ao verificar autenticação:', error);
+        }
+    }
+
+    // GET - Buscar todos os clientes (COM CONTROLE DE PERMISSÃO)
     async getClients() {
         try {
+            // Verificar se usuário está autenticado
+            if (!this.currentUser) {
+                throw new Error('Usuário não autenticado');
+            }
+
             console.log('🔍 Buscando clientes do Supabase...');
             
-            const { data, error, count } = await supabase
+            let query = supabase
                 .from('clientes')
                 .select('*', { count: 'exact' })
-                .order('id', { ascending: true });
+                .order('created_at', { ascending: false });
+
+            // Se não for admin, filtrar apenas pelos clientes do usuário
+            const userRole = this.currentUser.user_metadata?.role || 'user';
+            if (userRole !== 'admin') {
+                query = query.eq('user_id', this.currentUser.id);
+            }
+
+            const { data, error, count } = await query;
 
             if (error) {
                 console.error('❌ Erro do Supabase:', error);
@@ -31,15 +65,9 @@ class ClientAPI {
             }
 
             console.log(`✅ ${data?.length || 0} clientes encontrados`);
-            
-            if (data && data.length > 0) {
-                console.log('📝 Primeiro cliente:', data[0]);
-            }
-            
             return data || [];
         } catch (error) {
             console.error('💥 Erro ao buscar clientes:', error);
-            // Retorna array vazio em vez de throw para não quebrar a aplicação
             return [];
         }
     }
@@ -53,7 +81,7 @@ class ClientAPI {
                 title: `Contato: ${client.name}`,
                 start: client.next_contact,
                 allDay: true,
-                classNames: [client.porte.toLowerCase()],
+                classNames: [client.porte?.toLowerCase() || 'pequeno'],
                 extendedProps: {
                     clientId: client.id
                 }
@@ -66,12 +94,24 @@ class ClientAPI {
         }
     }
 
-    // PUT - Atualizar cliente
+    // PUT - Atualizar cliente (COM VERIFICAÇÃO DE PERMISSÃO)
     async updateClient(clientId, updates) {
         try {
+            if (!this.currentUser) {
+                throw new Error('Usuário não autenticado');
+            }
+
+            // Verificar se usuário tem permissão para editar este cliente
+            if (!await this.canEditClient(clientId)) {
+                throw new Error('Sem permissão para editar este cliente');
+            }
+
             const { data, error } = await supabase
                 .from('clientes')
-                .update(updates)
+                .update({
+                    ...updates,
+                    updated_at: new Date().toISOString()
+                })
                 .eq('id', clientId)
                 .select()
                 .single();
@@ -84,9 +124,13 @@ class ClientAPI {
         }
     }
 
-    // POST - Criar novo cliente
+    // POST - Criar novo cliente (COM USER_ID)
     async createClient(clientData) {
         try {
+            if (!this.currentUser) {
+                throw new Error('Usuário não autenticado');
+            }
+
             // Adicionar coordenadas se não fornecidas
             if (!clientData.lat || !clientData.lng) {
                 clientData.lat = CURITIBA_CENTER[0] + (Math.random() - 0.5) * 0.1;
@@ -95,7 +139,12 @@ class ClientAPI {
 
             const { data, error } = await supabase
                 .from('clientes')
-                .insert([clientData])
+                .insert([{
+                    ...clientData,
+                    user_id: this.currentUser.id, // Associar cliente ao usuário
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString()
+                }])
                 .select()
                 .single();
 
@@ -107,9 +156,18 @@ class ClientAPI {
         }
     }
 
-    // DELETE - Remover cliente
+    // DELETE - Remover cliente (COM VERIFICAÇÃO DE PERMISSÃO)
     async deleteClient(clientId) {
         try {
+            if (!this.currentUser) {
+                throw new Error('Usuário não autenticado');
+            }
+
+            // Verificar se usuário tem permissão para excluir este cliente
+            if (!await this.canEditClient(clientId)) {
+                throw new Error('Sem permissão para excluir este cliente');
+            }
+
             const { error } = await supabase
                 .from('clientes')
                 .delete()
@@ -123,9 +181,38 @@ class ClientAPI {
         }
     }
 
-    // MÉTODO AUXILIAR - Inserir dados mock (ATUALIZADO)
+    // Verificar se usuário pode editar/excluir cliente
+    async canEditClient(clientId) {
+        try {
+            const userRole = this.currentUser.user_metadata?.role || 'user';
+            
+            // Admin pode editar todos os clientes
+            if (userRole === 'admin') {
+                return true;
+            }
+
+            // Usuário comum só pode editar seus próprios clientes
+            const { data: client, error } = await supabase
+                .from('clientes')
+                .select('user_id')
+                .eq('id', clientId)
+                .single();
+
+            if (error) throw error;
+            return client.user_id === this.currentUser.id;
+        } catch (error) {
+            console.error('Erro ao verificar permissão:', error);
+            return false;
+        }
+    }
+
+    // MÉTODO AUXILIAR - Inserir dados mock (ATUALIZADO COM USER_ID)
     async insertMockData(count = 10) {
         try {
+            if (!this.currentUser) {
+                throw new Error('Usuário não autenticado');
+            }
+
             console.log(`🎲 Inserindo ${count} dados mock...`);
             
             const mockClients = this.generateMockClients(count);
@@ -136,9 +223,18 @@ class ClientAPI {
             
             for (let i = 0; i < mockClients.length; i += batchSize) {
                 const batch = mockClients.slice(i, i + batchSize);
+                
+                // Adicionar user_id a todos os clientes mock
+                const batchWithUserId = batch.map(client => ({
+                    ...client,
+                    user_id: this.currentUser.id,
+                    created_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString()
+                }));
+                
                 const { error } = await supabase
                     .from('clientes')
-                    .insert(batch);
+                    .insert(batchWithUserId);
 
                 if (error) {
                     console.warn('⚠️ Erro no lote (pode ser CNPJ duplicado):', error.message);
@@ -215,6 +311,11 @@ class ClientAPI {
             });
         }
         return clients;
+    }
+
+    // Atualizar usuário atual (para sincronização)
+    async updateCurrentUser() {
+        await this.checkAuth();
     }
 }
 

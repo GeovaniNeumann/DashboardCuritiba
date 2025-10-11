@@ -465,3 +465,51 @@ body {
     margin-bottom: 1rem;
     color: var(--text-light);
 }
+
+/* Gestão de Usuários */
+.user-management-section {
+    background-color: var(--card-background);
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+    margin-top: 2rem;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.section-header h2 {
+    margin: 0;
+}
+
+.role-admin {
+    color: #dc3545;
+    font-weight: 700;
+}
+
+.role-user {
+    color: #17a2b8;
+    font-weight: 700;
+}
+
+/* Ajustes para tabela de usuários */
+#user-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#user-table th, #user-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+#user-table th {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    color: var(--text-light);
+}

@@ -1,13 +1,17 @@
-// Arquivo: dashboard/js/main.js (Corrigido e Melhorado)
-
-// =============================================
-// FUNÇÕES DE FORMATAÇÃO MONETÁRIA (ADICIONADAS AQUI)
-// =============================================
+// Verificação de autenticação
+function checkAuth() {
+    const token = localStorage.getItem('auth_token');
+    if (!token) {
+        window.location.href = 'login.html';
+        return false;
+    }
+    return true;
+}
 
 /**
  * Formata um valor em centavos para moeda brasileira
- * @param {number} centavos - Valor em centavos (ex: 1000000 = R$ 10.000,00)
- * @returns {string} Valor formatado sem o "R$"
+ @param {number} centavos - Valor em centavos (ex: 1000000 = R$ 10.000,00)
+ @returns {string} Valor formatado sem o "R$"
  */
 function formatarParaMoeda(centavos) {
     const value = centavos / 100;
@@ -496,7 +500,7 @@ function initMap() {
     }
 
     try {
-        mapInstance = L.map('map').setView(CURITIBA_CENTER, 11);
+        mapInstance = L.map('map').setView([-25.4284, -49.2733], 11);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -564,6 +568,12 @@ async function loadClients() {
     try {
         console.log('🔄 Carregando clientes...');
         showNotification('Carregando clientes...', 'info');
+        
+        // VERIFICAR SE API ESTÁ SINCRONIZADA
+        if (!clientAPI.currentUser) {
+            console.log('🔄 Sincronizando API com auth...');
+            await clientAPI.updateCurrentUser();
+        }
         
         const clients = await clientAPI.getClients();
         console.log('📊 Clientes recebidos:', clients);
@@ -765,18 +775,37 @@ function setupEventListeners() {
     });
 }
 
-// 13. Função de Inicialização (CORRIGIDA)
+// 13. Função de Inicialização (VERSÃO SIMPLIFICADA)
 async function initDashboard() {
     try {
         console.log('🚀 Iniciando dashboard...');
         
-        // Aguarda um pouco para garantir que tudo está carregado
-        await new Promise(resolve => setTimeout(resolve, 100));
+        // VERIFICAR AUTENTICAÇÃO PRIMEIRO
+        if (!checkAuth()) return;
         
+        // AGUARDAR para auth carregar
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // SINCRONIZAR API COM AUTH
+        if (typeof clientAPI !== 'undefined') {
+            await clientAPI.updateCurrentUser();
+        }
+        
+        // CARREGAR DADOS PRINCIPAIS
         await loadClients();
         await initCalendar();
         initMap();
         setupEventListeners();
+        
+        // GESTÃO DE USUÁRIOS (se disponível)
+        setTimeout(() => {
+            if (typeof authService !== 'undefined' && authService.isAdmin && 
+                typeof initUserManagement !== 'undefined') {
+                if (authService.isAdmin()) {
+                    initUserManagement();
+                }
+            }
+        }, 2000);
         
         console.log('✅ Dashboard inicializado com sucesso!');
         

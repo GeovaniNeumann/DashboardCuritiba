@@ -10,11 +10,41 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    
 </head>
 <body>
-    <header class="header">
+ <header class="header">
         <h1>Gestão de Carteira de Clientes</h1>
         <p>Curitiba Esterilização de Materiais Médicos e Hospitalares</p>
+        <!-- Adicionar botão de logout no header -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Adicionar botão de logout no header
+        const header = document.querySelector('.header');
+        if (header) {
+            const logoutBtn = document.createElement('button');
+            logoutBtn.textContent = '🚪 Sair';
+            logoutBtn.className = 'btn-secondary';
+            logoutBtn.style.marginLeft = 'auto';
+            logoutBtn.style.marginRight = '1rem';
+            logoutBtn.onclick = () => authService.logout();
+            
+            const headerContent = document.createElement('div');
+            headerContent.style.display = 'flex';
+            headerContent.style.alignItems = 'center';
+            headerContent.style.width = '100%';
+            headerContent.style.justifyContent = 'space-between';
+            
+            const titleDiv = document.createElement('div');
+            titleDiv.innerHTML = header.innerHTML;
+            
+            headerContent.appendChild(titleDiv);
+            headerContent.appendChild(logoutBtn);
+            header.innerHTML = '';
+            header.appendChild(headerContent);
+        }
+    });
+</script>
     </header>
 
     <main class="dashboard-grid">

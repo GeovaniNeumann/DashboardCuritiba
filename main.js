@@ -1,6 +1,42 @@
 // Arquivo: dashboard/js/main.js (Corrigido e Melhorado)
 
-// Variáveis globais
+// =============================================
+// FUNÇÕES DE FORMATAÇÃO MONETÁRIA (ADICIONADAS AQUI)
+// =============================================
+
+/**
+ * Formata um valor em centavos para moeda brasileira
+ * @param {number} centavos - Valor em centavos (ex: 1000000 = R$ 10.000,00)
+ * @returns {string} Valor formatado sem o "R$"
+ */
+function formatarParaMoeda(centavos) {
+    const value = centavos / 100;
+    const formatter = new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+    });
+    return formatter.format(value).replace('R$', '').trim();
+}
+
+/**
+ * Converte string de moeda para centavos (para armazenar no banco)
+ * @param {string} currencyString - String no formato "10.000,00"
+ * @returns {number} Valor em centavos
+ */
+function prepararParaBancoDeDados(currencyString) {
+    if (!currencyString) return 0;
+    
+    const stringSemPontos = currencyString.replace(/\./g, '');
+    const stringComPontoDecimal = stringSemPontos.replace(',', '.');
+    const valorDecimal = parseFloat(stringComPontoDecimal);
+    
+    // Converte para centavos multiplicando por 100
+    return Math.round(valorDecimal * 100);
+}
+
+// =============================================
+// VARIÁVEIS GLOBAIS
+// =============================================
 let filteredClients = [];
 let porteChartInstance = null;
 let revenueChartInstance = null;
@@ -50,7 +86,7 @@ function closeModal() {
     if (modal) modal.remove();
 }
 
-// 7. Modais de Edição/Criação (MOVIDA PARA CIMA)
+// 7. Modais de Edição/Criação (ATUALIZADOS COM FORMATAÇÃO MONETÁRIA)
 function openEditModal(client) {
     const modal = document.createElement('div');
     modal.className = 'modal';
@@ -83,7 +119,7 @@ function openEditModal(client) {
                 </div>
                 <div class="form-group">
                     <label>Faturamento YTD:</label>
-                    <input type="number" name="revenue_ytd" value="${client.revenue_ytd || 0}" required>
+                    <input type="text" name="revenue_ytd" value="${formatarParaMoeda(client.revenue_ytd || 0)}" required placeholder="Ex: 10.000,00">
                 </div>
                 <div class="form-group">
                     <label>Frequência (dias):</label>
@@ -125,7 +161,7 @@ function openEditModal(client) {
             cnpj: formData.get('cnpj'),
             porte: formData.get('porte'),
             status: formData.get('status'),
-            revenue_ytd: parseInt(formData.get('revenue_ytd')),
+            revenue_ytd: prepararParaBancoDeDados(formData.get('revenue_ytd')), // CONVERTIDO PARA CENTAVOS
             frequency_days: parseInt(formData.get('frequency_days')),
             last_service: formData.get('last_service'),
             next_contact: formData.get('next_contact'),
@@ -173,7 +209,7 @@ function openCreateModal() {
                 </div>
                 <div class="form-group">
                     <label>Faturamento YTD:</label>
-                    <input type="number" name="revenue_ytd" required>
+                    <input type="text" name="revenue_ytd" required placeholder="Ex: 10.000,00">
                 </div>
                 <div class="form-group">
                     <label>Frequência (dias):</label>
@@ -215,7 +251,7 @@ function openCreateModal() {
             cnpj: formData.get('cnpj'),
             porte: formData.get('porte'),
             status: formData.get('status'),
-            revenue_ytd: parseInt(formData.get('revenue_ytd')),
+            revenue_ytd: prepararParaBancoDeDados(formData.get('revenue_ytd')), // CONVERTIDO PARA CENTAVOS
             frequency_days: parseInt(formData.get('frequency_days')),
             last_service: formData.get('last_service'),
             next_contact: formData.get('next_contact'),
@@ -404,7 +440,7 @@ function updateCharts(clients) {
     });
 }
 
-// 4. Lógica do Calendário (FullCalendar) - CORRIGIDA
+// 4. Lógica do Calendário (FullCalendar) - CORRIGIDA E TRADUZIDA
 async function initCalendar() {
     try {
         const calendarEl = document.getElementById('calendar');
@@ -427,6 +463,13 @@ async function initCalendar() {
                 center: 'title',
                 right: 'dayGridMonth,timeGridWeek,timeGridDay'
             },
+            buttonText: {
+                today: 'Hoje',
+                month: 'Mês',
+                week: 'Semana',
+                day: 'Dia'
+            },
+            allDayText: 'Dia Todo',
             events: events,
             eventClick: function(info) {
                 const clientId = info.event.extendedProps.clientId;
@@ -746,8 +789,12 @@ async function initDashboard() {
 // Inicia o dashboard quando o DOM estiver completamente carregado
 document.addEventListener('DOMContentLoaded', initDashboard);
 
-
+// =============================================
+// TORNE AS FUNÇÕES GLOBAIS (ADICIONADO)
+// =============================================
 window.openCreateModal = openCreateModal;
 window.openEditModal = openEditModal;
 window.closeModal = closeModal;
 window.selectClientForRoute = selectClientForRoute;
+window.formatarParaMoeda = formatarParaMoeda;
+window.prepararParaBancoDeDados = prepararParaBancoDeDados;

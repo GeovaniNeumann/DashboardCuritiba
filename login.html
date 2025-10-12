@@ -186,27 +186,6 @@
             font-weight: 500;
         }
 
-        /* ===== CREDENCIAIS DE DEMONSTRAÇÃO ===== */
-        .demo-credentials {
-            background: rgba(42, 157, 143, 0.1);
-            border: 1px solid rgba(42, 157, 143, 0.3);
-            border-radius: 8px;
-            padding: 1rem;
-            margin-top: 1.5rem;
-            font-size: 0.85rem;
-        }
-
-        .demo-credentials h3 {
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-        }
-
-        .demo-credentials p {
-            margin-bottom: 0.25rem;
-            color: var(--text-light);
-        }
-
         /* ===== ANIMAÇÕES ===== */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
@@ -280,12 +259,6 @@
                 </button>
             </form>
             
-            <div class="demo-credentials">
-                <h3>Credenciais de Demonstração:</h3>
-                <p><strong>E-mail:</strong> admin@admin.com</p>
-                <p><strong>Senha:</strong> admin123</p>
-            </div>
-            
             <div class="login-footer">
                 <p>Entre com suas credenciais de acesso</p>
             </div>
@@ -315,19 +288,13 @@
         // Configurar login form
         document.addEventListener('DOMContentLoaded', function() {
             const loginForm = document.getElementById('login-form');
-            const emailInput = document.getElementById('email');
-            const passwordInput = document.getElementById('password');
-
-            // Preencher automaticamente as credenciais de demonstração
-            emailInput.value = 'admin@admin.com';
-            passwordInput.value = 'admin123';
 
             if (loginForm) {
                 loginForm.addEventListener('submit', async function(e) {
                     e.preventDefault();
                     
-                    const email = emailInput.value;
-                    const password = passwordInput.value;
+                    const email = document.getElementById('email').value;
+                    const password = document.getElementById('password').value;
                     const loginBtn = loginForm.querySelector('.login-btn');
                     
                     // Mostrar estado de carregamento

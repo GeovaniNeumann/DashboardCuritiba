@@ -1,148 +1,153 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard de Gestão de Carteira - Curitiba Esterilização</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- Links para bibliotecas que usaremos -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
-    
-</head>
-<body>
- <header class="header">
-        <h1>Gestão de Carteira de Clientes</h1>
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Dashboard de Gestão de Carteira - Curitiba Esterilização</title>
+        <link rel="stylesheet" href="style.css">
         
-        <!-- Adicionar botão de logout no header -->
+        <!-- Links para bibliotecas que usaremos -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+        <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+        
+    </head>
+    <body>
+        <header class="header">
+            <h1>Gestão de Carteira de Clientes</h1>
+        </header>
 
-    </header>
-
-    <main class="dashboard-grid">
-        <!-- Coluna de Navegação/Filtros (Sidebar) -->
-        <aside class="sidebar">
-            <h2>Filtros e Ações</h2>
-            <div class="filter-group">
-                <label for="search-client">Buscar Cliente:</label>
-                <input type="text" id="search-client" placeholder="Nome ou CNPJ">
-            </div>
-            <div class="filter-group">
-                <label for="filter-porte">Filtrar por Porte:</label>
-                <select id="filter-porte">
-                    <option value="todos">Todos</option>
-                    <option value="Grande">Grande</option>
-                    <option value="Médio">Médio</option>
-                    <option value="Pequeno">Pequeno</option>
-                </select>
-            </div>
-            <div class="filter-group">
-                <label for="filter-status">Status:</label>
-                <select id="filter-status">
-                    <option value="todos">Todos</option>
-                    <option value="Ativo">Ativo</option>
-                    <option value="Inativo">Inativo</option>
-                </select>
-            </div>
-            <button class="btn-primary" id="apply-filters-btn">Aplicar Filtros</button>
-            
-            <div class="action-group" style="margin-top: 2rem;">
-                <h3>Ações Rápidas</h3>
-                <button class="btn-secondary" id="add-client-btn" style="width: 100%; margin-bottom: 0.5rem;">
-                    + Adicionar Cliente
-                </button>
-                <button class="btn-secondary" id="optimize-route-btn" style="width: 100%;">
-                    🗺️ Otimizar Rota
-                </button>
-            </div>
-        </aside>
-
-        <!-- Conteúdo Principal do Dashboard -->
-        <section class="content">
-            
-            <!-- 1. KPIs Principais -->
-            <div class="kpi-container">
-                <div class="kpi-card">
-                    <h3>Total de Clientes</h3>
-                    <p id="kpi-total-clients" class="kpi-value">0</p>
+        <main class="dashboard-grid">
+            <!-- Coluna de Navegação/Filtros (Sidebar) -->  
+            <aside class="sidebar">
+                <h2>Filtros e Ações</h2>
+                <button class="btn-secondary" id="clear-filters-btn" style="width: 100%; margin-top: 0.5rem;">
+    🗑️ Limpar Filtros
+</button>
+                <div class="filter-group">
+                    <label for="search-client">Buscar Cliente:</label>
+                    <input type="text" id="search-client" placeholder="Nome ou CNPJ">
                 </div>
-                <div class="kpi-card">
-                    <h3>Clientes Ativos</h3>
-                    <p id="kpi-active-clients" class="kpi-value">0</p>
+                <div class="filter-group">
+                    <label for="filter-porte">Filtrar por Porte:</label>
+                    <select id="filter-porte">
+                        <option value="todos">Todos</option>
+                        <option value="Grande">Grande</option>
+                        <option value="Médio">Médio</option>
+                        <option value="Pequeno">Pequeno</option>
+                    </select>
                 </div>
-                <div class="kpi-card">
-                    <h3>Faturamento YTD (R$)</h3>
-                    <p id="kpi-revenue" class="kpi-value">R$ 0,00</p>
+                <div class="filter-group">
+                    <label for="filter-status">Status:</label>
+                    <select id="filter-status">
+                        <option value="todos">Todos</option>
+                        <option value="Ativo">Ativo</option>
+                        <option value="Inativo">Inativo</option>
+                    </select>
                 </div>
-                <div class="kpi-card">
-                    <h3>Média de Frequência</h3>
-                    <p id="kpi-avg-frequency" class="kpi-value">0 dias</p>
-                </div>
-            </div>
-
-            <!-- 2. Gráficos e Visualizações -->
-            <div class="chart-grid">
-                <div class="chart-card">
-                    <h2>Distribuição por Porte</h2>
-                    <canvas id="porteChart"></canvas>
-                </div>
-                <div class="chart-card">
-                    <h2>Faturamento por Porte</h2>
-                    <canvas id="revenueChart"></canvas>
-                </div>
-            </div>
-
-            <!-- 3. Cronograma de Contato (Calendário) -->
-            <div class="calendar-section">
-                <h2>Cronograma de Próximos Contatos</h2>
-                <div id="calendar"></div>
-            </div>
-
-            <!-- 4. Mapa de Clientes -->
-            <div class="map-section">
-                <h2>Geolocalização de Clientes</h2>
-                <div id="map"></div>
-                <div class="map-actions">
-                    <button class="btn-secondary" id="select-clients-btn" style="margin-top: 1rem;">
-                        Selecionar Clientes para Rota
+                <button class="btn-primary" id="apply-filters-btn">Aplicar Filtros</button>
+                
+                <div class="action-group">
+                    <h3>Ações Rápidas</h3>
+                    <button class="btn-secondary" id="add-client-btn" style="width: 100%; margin-bottom: 0.5rem;">
+                        + Adicionar Cliente
                     </button>
-                    <div id="selected-clients-list" style="margin-top: 1rem; display: none;">
-                        <h4>Clientes Selecionados: <span id="selected-count">0</span></h4>
-                        <div id="selected-clients-names"></div>
+                    <button class="btn-secondary" id="optimize-route-btn" style="width: 100%;">
+                        🗺️ Otimizar Rota
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Conteúdo Principal do Dashboard -->
+            <section class="content">
+                
+                <!-- 1. KPIs Principais -->
+                <div class="kpi-container">
+                    <div class="kpi-card">
+                        <h3>Total de Clientes</h3>
+                        <p id="kpi-total-clients" class="kpi-value">0</p>
+                    </div>
+                    <div class="kpi-card">
+                        <h3>Clientes Ativos</h3>
+                        <p id="kpi-active-clients" class="kpi-value">0</p>
+                    </div>
+                    <div class="kpi-card">
+                        <h3>Faturamento YTD (R$)</h3>
+                        <p id="kpi-revenue" class="kpi-value">R$ 0,00</p>
+                    </div>
+                    <div class="kpi-card">
+                        <h3>Média de Frequência</h3>
+                        <p id="kpi-avg-frequency" class="kpi-value">0 dias</p>
                     </div>
                 </div>
-            </div>
 
-            <!-- 5. Lista Detalhada de Clientes -->
-            <div class="client-list-section">
-                <h2>Lista de Clientes</h2>
-                <table id="client-table">
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>Porte</th>
-                            <th>Status</th>
-                            <th>Faturamento YTD</th>
-                            <th>Último Serviço</th>
-                            <th>Próximo Contato</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="client-table-body">
-                        <!-- Dados serão inseridos aqui pelo JavaScript -->
-                    </tbody>
-                </table>
-            </div>
+                <!-- 2. Gráficos e Visualizações -->
+                <div class="chart-grid">
+                    <div class="chart-card">
+                        <h2>Distribuição por Porte</h2>
+                        <div class="chart-container">
+                            <canvas id="porteChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h2>Faturamento por Porte</h2>
+                        <div class="chart-container">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+                </div>
 
-        </section>
-    </main>
+                <!-- 3. Cronograma de Contato (Calendário) -->
+                <div class="calendar-section">
+                    <h2>Cronograma de Próximos Contatos</h2>
+                    <div id="calendar"></div>
+                </div>
 
-     <!-- Scripts -->
-     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-     <script src="api.js"></script>
-     <script src="routing.js"></script>
-     <script src="main.js"></script>
+                <!-- 4. Mapa de Clientes -->
+                <div class="map-section">
+                    <h2>Geolocalização de Clientes</h2>
+                    <div id="map"></div>
+                    <div class="map-actions">
+                        <button class="btn-secondary" id="select-clients-btn" style="margin-top: 1rem;">
+                            Selecionar Clientes para Rota
+                        </button>
+                        <div id="selected-clients-list" style="margin-top: 1rem; display: none;">
+                            <h4>Clientes Selecionados: <span id="selected-count">0</span></h4>
+                            <div id="selected-clients-names"></div>
+                        </div>
+                    </div>
+                </div>
 
-</body>
-</html>
+                <!-- 5. Lista Detalhada de Clientes -->
+                <div class="client-list-section">
+                    <h2>Lista de Clientes</h2>
+                    <table id="client-table">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Porte</th>
+                                <th>Status</th>
+                                <th>Faturamento YTD</th>
+                                <th>Último Serviço</th>
+                                <th>Próximo Contato</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="client-table-body">
+                            <!-- Dados serão inseridos aqui pelo JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+            </section>
+        </main>
+
+        <!-- Scripts -->
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <script src="api.js"></script>
+        <script src="routing.js"></script>
+        <script src="main.js"></script>
+
+    </body>
+    </html>

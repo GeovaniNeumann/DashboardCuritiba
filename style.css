@@ -3,7 +3,7 @@
 /* Variáveis de Cor e Fontes */
 :root {
     --primary-color: #0a4f70; /* Azul escuro */
-    --secondary-color: #4ab8a1; /* Verde-água */
+    --secondary-color: #148dd3; /* Verde-água */
     --background-color: #f4f7f6;
     --card-background: #ffffff;
     --text-color: #333333;
@@ -160,8 +160,6 @@ body {
     padding: 1.5rem;
     border-radius: 8px;
     box-shadow: var(--shadow);
-    width: 500px; /* Ajuste da largura */
-    height: 400px; /* Ajuste da altura */
 }
 
 .chart-card h2 {

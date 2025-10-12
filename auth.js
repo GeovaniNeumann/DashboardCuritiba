@@ -4,26 +4,6 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Função para criar admin (agora depois da inicialização)
-async function createAdminUser() {
-    const { data, error } = await supabase.auth.signUp({
-        email: 'admin@admin.com',
-        password: 'admin123',
-        options: {
-            data: {
-                role: 'admin',
-                name: 'Administrador'
-            }
-        }
-    });
-    
-    if (error) {
-        console.error('Erro:', error);
-    } else {
-        console.log('Admin criado:', data);
-    }
-}
-
 class AuthService {
     constructor() {
         this.currentUser = null;
@@ -108,41 +88,82 @@ class AuthService {
         return this.currentUser;
     }
 
-    // Função para criar usuário admin inicial (VERSÃO CORRIGIDA)
+    // Função para criar usuário admin inicial (VERSÃO CORRIGIDA E OTIMIZADA)
     async createInitialAdmin() {
         try {
             console.log('🔍 Verificando se admin existe...');
             
-            // Método correto: tentar criar diretamente
-            const { data, error } = await supabase.auth.signUp({
+            // Primeiro tenta fazer login (caso o admin já exista)
+            const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
                 email: 'admin@admin.com',
-                password: 'admin123',
-                options: {
-                    data: {
-                        role: 'admin',
-                        name: 'Administrador'
-                    }
-                }
+                password: 'admin123'
             });
 
-            if (error) {
-                if (error.message.includes('already registered')) {
-                    console.log('✅ Admin já existe');
-                } else {
-                    console.error('❌ Erro ao criar admin:', error.message);
-                }
-            } else {
-                console.log('✅ Usuário admin criado com sucesso!');
-                console.log('🔑 ID:', data.user?.id);
+            if (!loginError && loginData.user) {
+                console.log('✅ Login do admin bem-sucedido - usuário já existe');
+                return true;
             }
+
+            // Se não conseguiu fazer login, verifica se é rate limiting
+            if (loginError && loginError.message.includes('Invalid login credentials')) {
+                console.log('⏳ Admin não existe ainda. Aguardando para criar...');
+                
+                // Aguarda para evitar rate limiting
+                await new Promise(resolve => setTimeout(resolve, 10000)); // 10 segundos
+                
+                console.log('🔄 Tentando criar admin...');
+                const { data, error } = await supabase.auth.signUp({
+                    email: 'admin@admin.com',
+                    password: 'admin123',
+                    options: {
+                        data: {
+                            role: 'admin',
+                            name: 'Administrador'
+                        }
+                    }
+                });
+
+                if (error) {
+                    if (error.message.includes('already registered') || error.message.includes('User already registered')) {
+                        console.log('✅ Admin já existe no sistema');
+                    } else if (error.message.includes('36 seconds')) {
+                        console.log('⏱️ Rate limiting detectado. Aguarde 36 segundos e recarregue a página.');
+                        console.log('💡 Dica: Use o console do navegador para criar manualmente mais tarde.');
+                    } else {
+                        console.error('❌ Erro ao criar admin:', error.message);
+                    }
+                } else {
+                    console.log('✅ Usuário admin criado com sucesso!');
+                    console.log('🔑 Email: admin@admin.com | Senha: admin123');
+                    return true;
+                }
+            } else if (loginError) {
+                console.error('❌ Erro no login:', loginError.message);
+            }
+            
+            return false;
         } catch (error) {
             console.error('💥 Erro ao criar admin inicial:', error);
+            return false;
         }
     }
 }
 
 // Instanciar o serviço de autenticação
 const authService = new AuthService();
+
+// Função para inicialização única do admin
+async function initializeAdminOnce() {
+    const adminAlreadyTried = localStorage.getItem('admin_initialization_tried');
+    
+    if (!adminAlreadyTried) {
+        console.log('🔄 Tentando inicializar admin pela primeira vez...');
+        await authService.createInitialAdmin();
+        localStorage.setItem('admin_initialization_tried', 'true');
+    } else {
+        console.log('ℹ️ Inicialização do admin já foi tentada anteriormente');
+    }
+}
 
 // Configurar login form
 document.addEventListener('DOMContentLoaded', function() {
@@ -165,9 +186,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Criar admin inicial se necessário
-    authService.createInitialAdmin();
+    // Inicializar admin de forma controlada
+    initializeAdminOnce();
 });
-
-// REMOVA esta linha - ela está causando o erro!
-// createAdminUser();

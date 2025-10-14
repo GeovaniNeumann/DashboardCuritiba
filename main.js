@@ -1617,6 +1617,116 @@ async function deleteUser(userId) {
     }
 }
 
+// Adicionar ao main.js existente - NOVAS FUNCIONALIDADES
+
+// Função para registrar visita rápida
+function openQuickVisitModal(client) {
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <h3>📝 Registrar Visita - ${client.name}</h3>
+            <form id="quick-visit-form">
+                <div class="form-group">
+                    <label>Promotor:</label>
+                    <select name="promotor_id" required>
+                        ${visitsManager.promotors
+                            .filter(p => p.role === 'promotor' && p.status === 'Ativo')
+                            .map(p => `<option value="${p.id}">${p.name}</option>`)
+                            .join('')}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Data da Visita:</label>
+                    <input type="date" name="visit_date" value="${new Date().toISOString().split('T')[0]}" required>
+                </div>
+                <div class="form-group">
+                    <label>Duração (minutos):</label>
+                    <input type="number" name="duration" value="60" min="15" max="480">
+                </div>
+                <div class="form-group">
+                    <label>Objetivo:</label>
+                    <select name="purpose">
+                        <option value="Visita comercial">Visita comercial</option>
+                        <option value="Apresentação de produto">Apresentação de produto</option>
+                        <option value="Negociação de contrato">Negociação de contrato</option>
+                        <option value="Pós-venda">Pós-venda</option>
+                        <option value="Coleta de amostras">Coleta de amostras</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Observações:</label>
+                    <textarea name="observations" rows="3"></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="closeModal()">Cancelar</button>
+                    <button type="submit" class="btn-primary">✅ Registrar Visita</button>
+                </div>
+            </form>
+        </div>
+    `;
+
+    modal.querySelector('#quick-visit-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        
+        const visitData = {
+            client_id: client.id,
+            client_name: client.name,
+            promotor_id: parseInt(formData.get('promotor_id')),
+            promotor_name: visitsManager.promotors.find(p => p.id == formData.get('promotor_id')).name,
+            visit_date: formData.get('visit_date'),
+            duration: parseInt(formData.get('duration')),
+            purpose: formData.get('purpose'),
+            observations: formData.get('observations')
+        };
+
+        try {
+            await visitsManager.registerVisit(visitData);
+            showNotification('Visita registrada com sucesso!', 'success');
+            closeModal();
+        } catch (error) {
+            showNotification('Erro ao registrar visita: ' + error.message, 'error');
+        }
+    });
+
+    document.body.appendChild(modal);
+}
+
+// Adicionar botão de visita rápida na tabela de clientes
+function enhanceClientTable() {
+    // Modificar a renderização da tabela para incluir botão de visita
+    // Esta função será chamada dentro do renderClientTable
+}
+
+// Adicionar link para relatórios no menu
+function addReportsLink() {
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar) {
+        const reportsLink = document.createElement('div');
+        reportsLink.className = 'action-group';
+        reportsLink.innerHTML = `
+            <h3>📊 Relatórios</h3>
+            <button class="btn-secondary" onclick="window.open('reports.html', '_blank')" 
+                    style="width: 100%; margin-bottom: 0.5rem; padding: 10px 20px;">
+                📈 Relatórios Gerenciais
+            </button>
+            <button class="btn-secondary" onclick="openVisitsReport()" 
+                    style="width: 100%; padding: 10px 20px;">
+                👥 Relatório de Visitas
+            </button>
+        `;
+        sidebar.appendChild(reportsLink);
+    }
+}
+
+// Inicializar sistema de visitas
+document.addEventListener('DOMContentLoaded', async () => {
+    await visitsManager.loadInitialData();
+    addReportsLink();
+    enhanceClientTable();
+});
+
 // 13. Função de Inicialização
 async function initDashboard() {
     try {
